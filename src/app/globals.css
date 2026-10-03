@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-body: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply bg-ivory-50 text-charcoal-900;
+  line-height: 1.65;
+}
+
+html {
+  /* A deliberately larger base than the 16px default — generous type is part of
+     what reads as "premium" rather than "default template," and since Tailwind's
+     scale is rem-based this proportionally sizes every text/spacing utility. */
+  font-size: 17.5px;
+  scroll-behavior: smooth;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation-name: marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Booking modal enter/exit — keyed off Radix's data-state so Presence waits for
+   the animation to finish before unmounting, instead of the dialog just popping. */
+@keyframes dialog-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes dialog-overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes dialog-content-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@keyframes dialog-content-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+}
+.dialog-overlay[data-state='open'] {
+  animation: dialog-overlay-in 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.dialog-overlay[data-state='closed'] {
+  animation: dialog-overlay-out 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.dialog-content[data-state='open'] {
+  animation: dialog-content-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.dialog-content[data-state='closed'] {
+  animation: dialog-content-out 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* One-shot shake for a form field that just failed validation — applied via a
+   toggled class, never a continuous/repeating animation. */
+@keyframes field-shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-3px);
+  }
+  40%,
+  60% {
+    transform: translateX(3px);
+  }
+}
+.animate-field-shake {
+  animation: field-shake 0.4s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .dialog-overlay,
+  .dialog-content,
+  .animate-field-shake {
+    animation: none !important;
+  }
+}
+.cardsss{
+  width: 100%;
+}
