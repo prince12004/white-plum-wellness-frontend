@@ -139,7 +139,7 @@ export function HeroClient({ slides, ctaLabel }: { slides: HeroSlide[]; ctaLabel
             />
           </motion.p>
 
-          <motion.div variants={textItem} className="mt-8 flex flex-wrap items-center gap-3">
+          <motion.div variants={textItem} className="mt-8 hidden flex-wrap items-center gap-3 lg:flex">
             <BookAppointmentButton size="lg">{ctaLabel}</BookAppointmentButton>
             <WhatsappCtaLink className="h-12 px-6 text-base">WhatsApp Now</WhatsappCtaLink>
           </motion.div>
