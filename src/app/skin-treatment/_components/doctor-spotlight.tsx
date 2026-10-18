@@ -17,7 +17,7 @@ export async function DoctorSpotlight() {
       <Container>
         <SectionHeading eyebrow="Meet Your Doctor" title="Personalised Care, Backed By Expertise" />
         <div className="mx-auto grid max-w-4xl grid-cols-1 items-center gap-10 sm:grid-cols-[280px_1fr]">
-          <ImageReveal className="relative mx-auto aspect-[4/5] w-full max-w-[280px] overflow-hidden rounded-2xl">
+          <ImageReveal className="relative mx-auto aspect-[4/5] w-full max-w-[280px] overflow-hidden rounded-2xl ring-1 ring-gold-400/40 ring-offset-4 ring-offset-white">
             <Image src={doctor.photo} alt={doctor.name} fill sizes="280px" className="object-cover" />
           </ImageReveal>
           <FadeUp standalone>

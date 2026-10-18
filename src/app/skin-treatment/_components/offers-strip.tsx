@@ -1,4 +1,4 @@
-import { Tag } from 'lucide-react';
+import { CalendarClock, Tag } from 'lucide-react';
 import { Container, Section, SectionHeading } from '@/components/ui/container';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
@@ -32,6 +32,12 @@ export async function OffersStrip() {
                   <p className="text-sm">
                     <span className="text-charcoal-400 line-through">₹{offer.originalPrice.toLocaleString('en-IN')}</span>{' '}
                     <span className="font-semibold text-peach-600">₹{offer.offerPrice.toLocaleString('en-IN')}</span>
+                  </p>
+                )}
+                {offer.validUntil && (
+                  <p className="flex items-center gap-1.5 text-xs text-charcoal-400">
+                    <CalendarClock className="h-3.5 w-3.5" />
+                    Valid until {new Date(offer.validUntil).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </p>
                 )}
                 <WhatsappCtaLink context={{ offer: offer.title }} className="h-9 w-full text-xs">

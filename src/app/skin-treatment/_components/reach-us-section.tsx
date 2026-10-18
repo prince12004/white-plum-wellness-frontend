@@ -1,4 +1,4 @@
-import { MapPin, Phone } from 'lucide-react';
+import { MapPin, Navigation, Phone } from 'lucide-react';
 import { Container, Section, SectionHeading } from '@/components/ui/container';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
@@ -27,9 +27,20 @@ export async function ReachUsSection() {
                   <Phone className="h-4 w-4 shrink-0 text-peach-500" />
                   {clinic.phone}
                 </p>
-                <WhatsappCtaLink context={{ clinic: clinic.name, city: clinic.city }} className="mt-1 h-9 w-full text-xs">
-                  WhatsApp This Clinic
-                </WhatsappCtaLink>
+                <div className="mt-1 flex gap-2">
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${clinic.address}, ${clinic.area}, ${clinic.city}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-xl border border-peach-500 text-xs font-medium text-peach-600 transition-colors hover:bg-peach-50"
+                  >
+                    <Navigation className="h-3.5 w-3.5" />
+                    Directions
+                  </a>
+                  <WhatsappCtaLink context={{ clinic: clinic.name, city: clinic.city }} className="h-9 flex-1 text-xs">
+                    WhatsApp
+                  </WhatsappCtaLink>
+                </div>
               </div>
             </ScrollReveal>
           ))}

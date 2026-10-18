@@ -16,6 +16,7 @@ import { Footer } from '@/components/layout/footer';
 import { WhatsappFloatButton } from '@/components/layout/whatsapp-float-button';
 import { LandingMobileBar } from './_components/landing-mobile-bar';
 import { MotionProvider } from '@/components/ui/motion-provider';
+import { TrustStats } from '@/components/sections/trust-stats';
 
 export const metadata: Metadata = {
   title: 'Skin Treatment Clinic — Acne, Pigmentation & Anti-Ageing Care',
@@ -24,6 +25,17 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 60;
+
+/** A thin gold accent line, used between adjacent sections that share the same
+ * background tone (muted/muted or default/default) and would otherwise blend
+ * into one long block with no visual break. */
+function GoldDivider({ tone = 'default' }: { tone?: 'default' | 'muted' }) {
+  return (
+    <div className={`flex justify-center py-1 ${tone === 'muted' ? 'bg-ivory-100' : 'bg-white'}`}>
+      <div className="h-px w-24 bg-gradient-to-r from-transparent via-gold-400/50 to-transparent" />
+    </div>
+  );
+}
 
 /** Standalone Google Ads landing page — deliberately outside the (site) route
  * group, so it skips the full site nav/mobile-sticky-bar and gets its own
@@ -34,15 +46,19 @@ export default function SkinTreatmentLandingPage() {
       <div className="pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-0">
         <LandingTopBar />
         <LandingHero />
+        <TrustStats />
         <LandingUspBar />
         <TreatmentsSection />
         <OffersStrip />
         <WhySkinSection />
+        <GoldDivider tone="muted" />
         <ResultsStrip />
         <DoctorSpotlight />
+        <GoldDivider />
         <GalleryStrip />
         <LandingFaq />
         <TestimonialsSection />
+        <GoldDivider />
         <ReachUsSection />
         <FinalCta />
         <Footer />

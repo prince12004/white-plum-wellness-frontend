@@ -5,7 +5,7 @@ import { Stagger, FadeUp } from '@/components/ui/motion';
 const usps = [
   { icon: Stethoscope, label: 'Expert Dermatologists' },
   { icon: Microscope, label: 'Advanced Technology' },
-  { icon: HeartHandshake, label: '100% Patient Satisfaction' },
+  { icon: HeartHandshake, label: 'Patient-First Care' },
   { icon: BadgeCheck, label: 'Certified & Safe' },
 ];
 

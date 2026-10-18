@@ -25,6 +25,10 @@ export async function ResultsStrip() {
             </ScrollReveal>
           ))}
         </div>
+        <p className="mt-6 text-center text-xs text-charcoal-400">
+          Individual results vary by skin type and condition. A dermatologist will assess suitability during your
+          consultation.
+        </p>
       </Container>
     </Section>
   );
