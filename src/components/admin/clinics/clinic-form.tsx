@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Clinic, OpeningHour } from '@white/types';
+import type { Category, Clinic, OpeningHour, PaginatedResponse } from '@white/types';
 import {
   Button,
   Card,
@@ -15,7 +15,6 @@ import {
   useToast,
 } from '@white/ui';
 import { apiClient, ApiRequestError } from '@/lib/admin/api-client';
-import { SERVICE_CATEGORIES } from '@/lib/admin/service-categories';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -46,8 +45,13 @@ export function ClinicForm({ clinic }: ClinicFormProps) {
     clinic?.openingHours?.length ? clinic.openingHours : defaultHours(),
   );
   const [categorySlugs, setCategorySlugs] = useState<string[]>(clinic?.categorySlugs ?? []);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    apiClient.get<PaginatedResponse<Category>>('/categories?pageSize=50').then((res) => setCategories(res.items));
+  }, []);
 
   function updateHours(day: string, hours: string) {
     setOpeningHours((prev) => prev.map((h) => (h.day === day ? { ...h, hours } : h)));
@@ -134,7 +138,7 @@ export function ClinicForm({ clinic }: ClinicFormProps) {
           <div className="flex flex-col gap-1.5">
             <Label>Categories offered</Label>
             <MultiSelect
-              options={SERVICE_CATEGORIES.map((c) => ({ value: c.slug, label: c.name }))}
+              options={categories.map((c) => ({ value: c.slug, label: c.name }))}
               value={categorySlugs}
               onChange={setCategorySlugs}
               placeholder="Select categories…"

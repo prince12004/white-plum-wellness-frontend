@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Clinic, Doctor, PaginatedResponse, TreatmentPackage } from '@white/types';
+import type { Category, Clinic, Doctor, PaginatedResponse, TreatmentPackage } from '@white/types';
 import {
   Button,
   Card,
@@ -17,7 +17,6 @@ import {
 } from '@white/ui';
 import { apiClient, ApiRequestError } from '@/lib/admin/api-client';
 import { arrayToLines, linesToArray } from '@/lib/admin/array-fields';
-import { SERVICE_CATEGORIES } from '@/lib/admin/service-categories';
 import { FaqListEditor, type FaqRow } from '@/components/admin/shared/faq-list-editor';
 
 interface PackageFormProps {
@@ -31,7 +30,7 @@ export function PackageForm({ pkg }: PackageFormProps) {
 
   const [slug, setSlug] = useState(pkg?.slug ?? '');
   const [name, setName] = useState(pkg?.name ?? '');
-  const [categorySlug, setCategorySlug] = useState(pkg?.categorySlug ?? (SERVICE_CATEGORIES[0]?.slug ?? ''));
+  const [categorySlug, setCategorySlug] = useState(pkg?.categorySlug ?? '');
   const [image, setImage] = useState(pkg?.image ?? '');
   const [description, setDescription] = useState(pkg?.description ?? '');
   const [treatmentsIncluded, setTreatmentsIncluded] = useState(arrayToLines(pkg?.treatmentsIncluded));
@@ -45,12 +44,17 @@ export function PackageForm({ pkg }: PackageFormProps) {
   const [faqs, setFaqs] = useState<FaqRow[]>(pkg?.faqs ?? []);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [clinics, setClinics] = useState<Clinic[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     apiClient.get<PaginatedResponse<Doctor>>('/doctors?pageSize=200').then((res) => setDoctors(res.items));
     apiClient.get<PaginatedResponse<Clinic>>('/clinics?pageSize=200').then((res) => setClinics(res.items));
+    apiClient.get<PaginatedResponse<Category>>('/categories?pageSize=50').then((res) => {
+      setCategories(res.items);
+      setCategorySlug((current) => current || (res.items[0]?.slug ?? ''));
+    });
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -104,7 +108,7 @@ export function PackageForm({ pkg }: PackageFormProps) {
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="pkg-category">Category</Label>
             <Select id="pkg-category" value={categorySlug} onChange={(e) => setCategorySlug(e.target.value)}>
-              {SERVICE_CATEGORIES.map((c) => (
+              {categories.map((c) => (
                 <option key={c.slug} value={c.slug}>
                   {c.name}
                 </option>

@@ -9,24 +9,26 @@ import { DoctorCard } from '@/components/cards/doctor-card';
 import { FaqAccordion } from '@/components/ui/accordion';
 import { BookAppointmentButton } from '@/components/booking/book-appointment-button';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
-import { categories, getCategoryBySlug } from '@/data/categories';
+import { getAllCategories, getCategoryBySlug } from '@/data/categories';
 import { getServicesByCategory } from '@/data/services';
 import { getPackagesByCategory } from '@/data/packages';
 import { getAllConcerns } from '@/data/concerns';
 import { getAllDoctors } from '@/data/doctors';
 import { getHomepageFaqs } from '@/data/faqs';
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const categories = await getAllCategories();
   return categories.map((c) => ({ category: c.slug }));
 }
 
-// All valid category slugs are known at build time — treat anything else as a
-// real 404 at the routing layer rather than rendering on-demand.
-export const dynamicParams = false;
+// Known category slugs are statically generated at build time; a category
+// added later in admin still renders on first request instead of 404ing.
+export const dynamicParams = true;
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category: categorySlug } = await params;
-  const category = getCategoryBySlug(categorySlug);
+  const category = await getCategoryBySlug(categorySlug);
   if (!category) return {};
   return {
     title: `${category.name} Treatments`,
@@ -36,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
 
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category: categorySlug } = await params;
-  const category = getCategoryBySlug(categorySlug);
+  const category = await getCategoryBySlug(categorySlug);
   if (!category) notFound();
 
   const [categoryServices, categoryPackages, allConcerns, allDoctors, homepageFaqs] = await Promise.all([

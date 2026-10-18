@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Clinic, Concern, Doctor, PaginatedResponse, Service } from '@white/types';
+import type { Category, Clinic, Concern, Doctor, PaginatedResponse, Service } from '@white/types';
 import {
   Button,
   Card,
@@ -22,7 +22,6 @@ import {
 } from '@white/ui';
 import { apiClient, ApiRequestError } from '@/lib/admin/api-client';
 import { arrayToLines, linesToArray } from '@/lib/admin/array-fields';
-import { SERVICE_CATEGORIES } from '@/lib/admin/service-categories';
 import { FaqListEditor, type FaqRow } from '@/components/admin/shared/faq-list-editor';
 import { ProcessListEditor, type ProcessRow } from '@/components/admin/shared/process-list-editor';
 
@@ -38,7 +37,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
   // Basic info
   const [slug, setSlug] = useState(service?.slug ?? '');
   const [name, setName] = useState(service?.name ?? '');
-  const [categorySlug, setCategorySlug] = useState(service?.categorySlug ?? (SERVICE_CATEGORIES[0]?.slug ?? ''));
+  const [categorySlug, setCategorySlug] = useState(service?.categorySlug ?? '');
   const [shortDescription, setShortDescription] = useState(service?.shortDescription ?? '');
   const [image, setImage] = useState(service?.image ?? '');
   const [startingPrice, setStartingPrice] = useState(service?.startingPrice ?? 0);
@@ -70,6 +69,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
   const [concerns, setConcerns] = useState<Concern[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [clinics, setClinics] = useState<Clinic[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -77,6 +77,10 @@ export function ServiceForm({ service }: ServiceFormProps) {
     apiClient.get<PaginatedResponse<Concern>>('/concerns?pageSize=200').then((res) => setConcerns(res.items));
     apiClient.get<PaginatedResponse<Doctor>>('/doctors?pageSize=200').then((res) => setDoctors(res.items));
     apiClient.get<PaginatedResponse<Clinic>>('/clinics?pageSize=200').then((res) => setClinics(res.items));
+    apiClient.get<PaginatedResponse<Category>>('/categories?pageSize=50').then((res) => {
+      setCategories(res.items);
+      setCategorySlug((current) => current || (res.items[0]?.slug ?? ''));
+    });
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -152,7 +156,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="svc-category">Category</Label>
                 <Select id="svc-category" value={categorySlug} onChange={(e) => setCategorySlug(e.target.value)}>
-                  {SERVICE_CATEGORIES.map((c) => (
+                  {categories.map((c) => (
                     <option key={c.slug} value={c.slug}>
                       {c.name}
                     </option>

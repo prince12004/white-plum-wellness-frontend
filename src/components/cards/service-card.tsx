@@ -7,8 +7,8 @@ import { getCategoryBySlug } from '@/data/categories';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
 import { WhatsappIcon } from '@/components/ui/whatsapp-icon';
 
-export function ServiceCard({ service }: { service: Service }) {
-  const category = getCategoryBySlug(service.categorySlug);
+export async function ServiceCard({ service }: { service: Service }) {
+  const category = await getCategoryBySlug(service.categorySlug);
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-ivory-200 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-[0_20px_40px_-18px_rgba(229,102,144,0.4)]">

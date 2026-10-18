@@ -6,7 +6,7 @@ import { CategoryCard } from '@/components/cards/category-card';
 import { ServiceCard } from '@/components/cards/service-card';
 import { FaqAccordion } from '@/components/ui/accordion';
 import { BookAppointmentButton } from '@/components/booking/book-appointment-button';
-import { categories } from '@/data/categories';
+import { getAllCategories } from '@/data/categories';
 import { getAllServices, getFeaturedServices, getPopularServices } from '@/data/services';
 import { getHomepageFaqs } from '@/data/faqs';
 
@@ -16,8 +16,9 @@ export const metadata: Metadata = {
 };
 
 export default async function ServicesPage() {
-  const [services, featured, popular, homepageFaqs] = await Promise.all([
+  const [services, categories, featured, popular, homepageFaqs] = await Promise.all([
     getAllServices(),
+    getAllCategories(),
     getFeaturedServices(),
     getPopularServices(),
     getHomepageFaqs(),

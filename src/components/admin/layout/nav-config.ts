@@ -3,6 +3,7 @@ import {
   BarChart3,
   Building2,
   CalendarCheck,
+  LayoutGrid,
   FileText,
   GalleryHorizontalEnd,
   HelpCircle,
@@ -64,6 +65,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     label: 'Content',
     items: [
+      { label: 'Categories', href: '/admin/categories', icon: LayoutGrid, permission: 'categories:read', status: 'active' },
       { label: 'Services', href: '/admin/services', icon: Sparkles, permission: 'services:read', status: 'active' },
       { label: 'Concerns', href: '/admin/concerns', icon: Stethoscope, permission: 'concerns:read', status: 'active' },
       { label: 'Packages', href: '/admin/packages', icon: Package, permission: 'packages:read', status: 'active' },
