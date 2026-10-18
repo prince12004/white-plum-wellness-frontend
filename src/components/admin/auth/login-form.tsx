@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ShieldCheck } from 'lucide-react';
 import { Button, Input, Label } from '@white/ui';
 import { apiClient, ApiRequestError } from '@/lib/admin/api-client';
+import { PasswordInput } from '@/components/admin/shared/password-input';
 
 export function LoginForm() {
   const router = useRouter();
@@ -49,9 +50,8 @@ export function LoginForm() {
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="password">Password</Label>
-        <Input
+        <PasswordInput
           id="password"
-          type="password"
           autoComplete="current-password"
           required
           value={password}

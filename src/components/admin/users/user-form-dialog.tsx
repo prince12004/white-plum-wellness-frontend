@@ -15,6 +15,7 @@ import {
   useToast,
 } from '@white/ui';
 import { apiClient, ApiRequestError } from '@/lib/admin/api-client';
+import { PasswordInput } from '@/components/admin/shared/password-input';
 
 interface UserFormDialogProps {
   open: boolean;
@@ -94,9 +95,8 @@ export function UserFormDialog({ open, onOpenChange, roles, user, onSaved }: Use
           {!isEdit && (
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="password">Password</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 required
                 minLength={8}
                 value={password}
