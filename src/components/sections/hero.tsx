@@ -1,7 +1,6 @@
-import { getHomepageContent } from '@/data/homepage-content';
+import { sectionContent, type SectionProps } from '@/lib/cms/sections';
 import { HeroClient } from './hero-client';
 
-export async function Hero() {
-  const content = await getHomepageContent();
-  return <HeroClient slides={content.heroSlides} ctaLabel={content.heroCtaLabel} />;
+export function Hero({ content }: SectionProps) {
+  return <HeroClient content={sectionContent('hero', content)} />;
 }

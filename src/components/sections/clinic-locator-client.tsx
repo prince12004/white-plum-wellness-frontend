@@ -9,9 +9,17 @@ import { ClinicCard } from '@/components/cards/clinic-card';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { ImageReveal } from '@/components/ui/motion';
 import type { Clinic } from '@/data/clinics';
-import { placeholderImage } from '@/data/images';
+import type { SectionContent } from '@/lib/cms/sections';
 
-export function ClinicLocatorClient({ clinics, cities }: { clinics: Clinic[]; cities: string[] }) {
+export function ClinicLocatorClient({
+  clinics,
+  cities,
+  content,
+}: {
+  clinics: Clinic[];
+  cities: string[];
+  content: SectionContent<'clinic-locator'>;
+}) {
   const [selectedCity, setSelectedCity] = useState('all');
 
   const filtered = useMemo(
@@ -21,7 +29,7 @@ export function ClinicLocatorClient({ clinics, cities }: { clinics: Clinic[]; ci
 
   return (
     <Container>
-      <SectionHeading eyebrow="Visit Us" title="Find Your Clinic" description="Five clinics, one consistent standard of care — choose the one closest to you." />
+      <SectionHeading eyebrow={content.eyebrow} title={content.title} description={content.description} />
 
       <ScrollReveal className="mb-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
         <label htmlFor="city-filter" className="text-sm font-medium text-charcoal-700">
@@ -51,7 +59,7 @@ export function ClinicLocatorClient({ clinics, cities }: { clinics: Clinic[]; ci
           ))}
         </div>
         <ImageReveal delay={150} className="relative hidden rounded-2xl bg-ivory-200 lg:col-span-2 lg:block">
-          <Image src={placeholderImage('map-placeholder', 700, 900)} alt="Map of clinic locations" fill sizes="40vw" className="object-cover" />
+          {content.image && <Image src={content.image} alt="Map of clinic locations" fill sizes="40vw" className="object-cover" />}
           <div className="absolute inset-0 flex items-center justify-center bg-charcoal-900/20">
             <div className="flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-charcoal-700 shadow">
               <MapPin className="h-4 w-4 text-peach-500" />

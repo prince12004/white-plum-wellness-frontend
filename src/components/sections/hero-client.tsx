@@ -3,19 +3,14 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ShieldCheck, Sparkles, Star, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { cn } from '@white/ui';
-import type { HeroSlide } from '@white/types';
-import { BookAppointmentButton } from '@/components/booking/book-appointment-button';
+import { BookingCta } from '@/components/cms/booking-cta';
+import { CmsIcon } from '@/lib/cms/icons';
+import type { SectionContent } from '@/lib/cms/sections';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
 import { RotatingWord } from '@/components/ui/rotating-word';
 import { avatarImage } from '@/data/images';
-
-const trustIndicators = [
-  { icon: Users, label: '25,000+ Happy Clients' },
-  { icon: ShieldCheck, label: 'Certified Dermatologists' },
-  { icon: Sparkles, label: '40+ Advanced Treatments' },
-];
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -34,7 +29,8 @@ function splitLastWord(title: string): [string, string] {
   return [parts.join(' '), last];
 }
 
-export function HeroClient({ slides, ctaLabel }: { slides: HeroSlide[]; ctaLabel: string }) {
+export function HeroClient({ content }: { content: SectionContent<'hero'> }) {
+  const { slides } = content;
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -49,21 +45,23 @@ export function HeroClient({ slides, ctaLabel }: { slides: HeroSlide[]; ctaLabel
 
   return (
     <section className="relative flex min-h-[85vh] items-end overflow-hidden bg-charcoal-900 text-white sm:min-h-[92vh]">
-      {slides.map((s, i) => (
-        <Image
-          key={`${s.title}-${i}`}
-          src={s.image}
-          alt=""
-          fill
-          priority={i === 0}
-          sizes="100vw"
-          unoptimized
-          className={cn(
-            'absolute inset-0 object-cover transition-opacity duration-[1400ms] ease-out',
-            i === index ? 'opacity-100 scale-100' : 'opacity-0 scale-105',
-          )}
-        />
-      ))}
+      {slides.map((s, i) =>
+        s.image ? (
+          <Image
+            key={`${s.title}-${i}`}
+            src={s.image}
+            alt=""
+            fill
+            priority={i === 0}
+            sizes="100vw"
+            unoptimized
+            className={cn(
+              'absolute inset-0 object-cover transition-opacity duration-[1400ms] ease-out',
+              i === index ? 'opacity-100 scale-100' : 'opacity-0 scale-105',
+            )}
+          />
+        ) : null,
+      )}
       <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900 via-charcoal-900/65 to-charcoal-900/25" />
 
       {/* Ambient glow blobs — the warm, layered light that reads "premium" instead of flat */}
@@ -93,8 +91,8 @@ export function HeroClient({ slides, ctaLabel }: { slides: HeroSlide[]; ctaLabel
             <Star key={i} className="h-4 w-4 fill-gold-400 text-gold-400" />
           ))}
         </div>
-        <p className="mt-2 font-display text-2xl font-medium text-white">4.9 / 5</p>
-        <p className="text-sm text-ivory-100/70">from 2,400+ verified reviews</p>
+        <p className="mt-2 font-display text-2xl font-medium text-white">{content.ratingTitle}</p>
+        <p className="text-sm text-ivory-100/70">{content.ratingNote}</p>
         <div className="mt-4 flex items-center gap-2 border-t border-white/10 pt-4">
           <div className="flex -space-x-2">
             {['t1', 't3', 't5', 't9'].map((seed) => (
@@ -103,7 +101,7 @@ export function HeroClient({ slides, ctaLabel }: { slides: HeroSlide[]; ctaLabel
               </div>
             ))}
           </div>
-          <p className="text-xs text-ivory-100/70">Loved by patients across 5 cities</p>
+          <p className="text-xs text-ivory-100/70">{content.ratingFooter}</p>
         </div>
       </motion.div>
 
@@ -131,23 +129,24 @@ export function HeroClient({ slides, ctaLabel }: { slides: HeroSlide[]; ctaLabel
             {slide.description}
           </motion.p>
 
-          <motion.p variants={textItem} className="mt-4 flex items-center gap-2 text-base text-ivory-100/70">
-            We specialise in
-            <RotatingWord
-              words={['Skin', 'Hair', 'Laser', 'Anti-Ageing', 'Bridal Glow']}
-              className="font-display font-semibold text-peach-300"
-            />
-          </motion.p>
+          {content.rotatingWords.length > 0 && (
+            <motion.p variants={textItem} className="mt-4 flex items-center gap-2 text-base text-ivory-100/70">
+              {content.rotatingLabel}
+              <RotatingWord words={content.rotatingWords} className="font-display font-semibold text-peach-300" />
+            </motion.p>
+          )}
 
           <motion.div variants={textItem} className="mt-8 hidden flex-wrap items-center gap-3 lg:flex">
-            <BookAppointmentButton size="lg">{ctaLabel}</BookAppointmentButton>
-            <WhatsappCtaLink className="h-12 px-6 text-base">WhatsApp Now</WhatsappCtaLink>
+            <BookingCta size="lg" href={content.ctaHref}>
+              {content.ctaLabel}
+            </BookingCta>
+            {content.whatsappLabel && <WhatsappCtaLink className="h-12 px-6 text-base">{content.whatsappLabel}</WhatsappCtaLink>}
           </motion.div>
 
           <motion.div variants={textItem} className="mt-10 flex flex-wrap gap-6 border-t border-white/10 pt-6">
-            {trustIndicators.map(({ icon: IndicatorIcon, label }) => (
+            {content.trustIndicators.map(({ icon, label }) => (
               <div key={label} className="flex items-center gap-2 text-sm text-ivory-100/80">
-                <IndicatorIcon className="h-4 w-4 text-peach-300" />
+                <CmsIcon name={icon} className="h-4 w-4 text-peach-300" />
                 {label}
               </div>
             ))}

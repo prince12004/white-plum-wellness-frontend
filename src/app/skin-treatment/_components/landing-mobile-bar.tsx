@@ -5,12 +5,11 @@ import { BookAppointmentButton } from '@/components/booking/book-appointment-but
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
 import { EASE } from '@/lib/motion';
 
-const bookingContext = { service: 'Skin Treatment' };
-
 /** This route lives outside the (site) layout group (deliberately nav-free
  * for conversion focus), so it doesn't inherit the site-wide MobileStickyBar —
  * this is its own copy, scoped to this page only. */
-export function LandingMobileBar() {
+export function LandingMobileBar({ service }: { service: string }) {
+  const bookingContext = { service };
   return (
     <motion.div
       initial={{ y: 80, opacity: 0 }}

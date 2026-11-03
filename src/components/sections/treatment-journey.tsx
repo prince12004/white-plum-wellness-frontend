@@ -4,13 +4,14 @@ import { motion } from 'framer-motion';
 import { Container, Section, SectionHeading } from '@/components/ui/container';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { EASE } from '@/lib/motion';
-import { treatmentJourney } from '@/data/content';
+import { sectionContent, type SectionProps } from '@/lib/cms/sections';
 
-export function TreatmentJourney() {
+export function TreatmentJourney({ content }: SectionProps) {
+  const c = sectionContent('treatment-journey', content);
   return (
     <Section>
       <Container>
-        <SectionHeading eyebrow="How It Works" title="Your Treatment Journey" description="A clear, five-step process from first consultation to lasting results." />
+        <SectionHeading eyebrow={c.eyebrow} title={c.title} description={c.description} />
         <div className="relative grid grid-cols-1 gap-8 sm:grid-cols-5">
           <div className="absolute left-0 right-0 top-6 hidden h-px bg-ivory-200 sm:block" aria-hidden="true" />
           <motion.div
@@ -21,7 +22,7 @@ export function TreatmentJourney() {
             transition={{ duration: 1.1, ease: EASE, delay: 0.1 }}
             aria-hidden="true"
           />
-          {treatmentJourney.map((item, i) => (
+          {c.items.map((item, i) => (
             <ScrollReveal key={item.step} delay={i * 100} className="relative flex flex-col items-center text-center">
               <div className="z-10 flex h-12 w-12 items-center justify-center rounded-full bg-peach-500 font-display text-sm font-semibold text-white">
                 {item.step}

@@ -7,7 +7,7 @@ import { ScrollReveal } from '@/components/ui/scroll-reveal';
 /** The card's visual content only, no reveal-on-scroll wrapper — used directly
  * inside the desktop carousel (where embla handles positioning) and wrapped in
  * ScrollReveal for the mobile/tablet grid. */
-export function TreatmentOfferCardContent({ service }: { service: Service }) {
+export function TreatmentOfferCardContent({ service, ctaLabel }: { service: Service; ctaLabel: string }) {
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-ivory-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-18px_rgba(229,102,144,0.4)]">
       <div className="relative h-40 w-full overflow-hidden">
@@ -29,17 +29,17 @@ export function TreatmentOfferCardContent({ service }: { service: Service }) {
         )}
         <WhatsappCtaLink context={{ service: service.name }} className="mt-2 h-9 w-full gap-1.5 text-xs">
           <WhatsappIcon className="h-3.5 w-3.5" />
-          Book Free Consultation
+          {ctaLabel}
         </WhatsappCtaLink>
       </div>
     </div>
   );
 }
 
-export function TreatmentOfferCard({ service, delay = 0 }: { service: Service; delay?: number }) {
+export function TreatmentOfferCard({ service, ctaLabel, delay = 0 }: { service: Service; ctaLabel: string; delay?: number }) {
   return (
     <ScrollReveal delay={delay}>
-      <TreatmentOfferCardContent service={service} />
+      <TreatmentOfferCardContent service={service} ctaLabel={ctaLabel} />
     </ScrollReveal>
   );
 }

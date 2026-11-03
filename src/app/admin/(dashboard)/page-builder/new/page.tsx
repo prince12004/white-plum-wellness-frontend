@@ -6,7 +6,7 @@ import { CustomPageForm } from '@/components/admin/page-builder/custom-page-form
 export default function NewCustomPagePage() {
   return (
     <div className="flex flex-col gap-6">
-      <FormPageHeader title="New page" description="Create a standalone content page for the public site." backHref="/page-builder" />
+      <FormPageHeader title="New page" description="Create a new website page." backHref="/admin/page-builder" />
       <CustomPageForm />
     </div>
   );

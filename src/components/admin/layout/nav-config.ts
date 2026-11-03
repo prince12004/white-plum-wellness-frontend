@@ -77,8 +77,8 @@ export const NAV_SECTIONS: NavSection[] = [
       { label: 'Blogs', href: '/admin/blogs', icon: Newspaper, permission: 'blogs:read', status: 'active' },
       { label: 'FAQs', href: '/admin/faqs', icon: HelpCircle, permission: 'faqs:read', status: 'active' },
       { label: 'Gallery', href: '/admin/gallery', icon: GalleryHorizontalEnd, permission: 'gallery:read', status: 'active' },
-      { label: 'Homepage CMS', href: '/admin/homepage-cms', icon: LayoutTemplate, permission: 'homepage-cms:read', status: 'active' },
-      { label: 'Custom Pages', href: '/admin/page-builder', icon: Wand2, permission: 'page-builder:read', status: 'active' },
+      { label: 'Homepage Management', href: '/admin/homepage-cms', icon: LayoutTemplate, permission: 'homepage-cms:read', status: 'active' },
+      { label: 'Pages Management', href: '/admin/page-builder', icon: Wand2, permission: 'page-builder:read', status: 'active' },
       { label: 'Media Library', href: '/admin/media', icon: Images, permission: 'media:read', status: 'active' },
     ],
   },
@@ -86,7 +86,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: 'Insights',
     items: [
       { label: 'Analytics', href: '/admin/analytics', icon: BarChart3, permission: 'analytics:read', status: 'active' },
-      { label: 'SEO', href: '/admin/seo', icon: Search, permission: 'seo:read', status: 'active' },
+      { label: 'SEO Management', href: '/admin/seo', icon: Search, permission: 'seo:read', status: 'active' },
     ],
   },
   {

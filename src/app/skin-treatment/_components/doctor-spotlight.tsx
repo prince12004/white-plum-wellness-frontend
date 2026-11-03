@@ -5,17 +5,19 @@ import { ImageReveal, FadeUp } from '@/components/ui/motion';
 import { BookAppointmentButton } from '@/components/booking/book-appointment-button';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
 import { getDoctorBySlug } from '@/data/doctors';
+import { sectionContent, type SectionProps } from '@/lib/cms/sections';
 
-export async function DoctorSpotlight() {
-  const doctor = await getDoctorBySlug('dr-anika-sharma');
+export async function DoctorSpotlight({ content }: SectionProps) {
+  const c = sectionContent('landing-doctor', content);
+  const doctor = await getDoctorBySlug(c.doctorSlug);
   if (!doctor) return null;
 
-  const bookingContext = { doctor: doctor.name, service: 'Skin Treatment' };
+  const bookingContext = { doctor: doctor.name, service: c.bookingService };
 
   return (
     <Section>
       <Container>
-        <SectionHeading eyebrow="Meet Your Doctor" title="Personalised Care, Backed By Expertise" />
+        <SectionHeading eyebrow={c.eyebrow} title={c.title} description={c.description} />
         <div className="mx-auto grid max-w-4xl grid-cols-1 items-center gap-10 sm:grid-cols-[280px_1fr]">
           <ImageReveal className="relative mx-auto aspect-[4/5] w-full max-w-[280px] overflow-hidden rounded-2xl ring-1 ring-gold-400/40 ring-offset-4 ring-offset-white">
             <Image src={doctor.photo} alt={doctor.name} fill sizes="280px" className="object-cover" />

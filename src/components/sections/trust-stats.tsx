@@ -1,13 +1,14 @@
 import { Section } from '@/components/ui/container';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { StatCounter } from '@/components/ui/stat-counter';
-import { stats } from '@/data/content';
+import { sectionContent, type SectionProps } from '@/lib/cms/sections';
 
-export function TrustStats() {
+export function TrustStats({ content }: SectionProps) {
+  const { items } = sectionContent('trust-stats', content);
   return (
     <Section className="border-b border-ivory-200 bg-charcoal-900 py-10 text-white md:py-14">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-4 sm:px-6 md:grid-cols-4 lg:divide-x lg:divide-white/10 lg:px-8">
-        {stats.map((stat, i) => (
+        {items.map((stat, i) => (
           <ScrollReveal key={stat.label} delay={i * 100} className="text-center">
             <p className="bg-gradient-to-r from-peach-300 via-gold-200 to-gold-300 bg-clip-text font-display text-3xl font-semibold text-transparent sm:text-4xl">
               <StatCounter value={stat.value} suffix={stat.suffix} />

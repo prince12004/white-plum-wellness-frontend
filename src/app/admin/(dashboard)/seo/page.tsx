@@ -16,6 +16,7 @@ import {
   useToast,
 } from '@white/ui';
 import { apiClient, ApiRequestError } from '@/lib/admin/api-client';
+import { SeoPagesCard } from '@/components/admin/cms/seo-pages-card';
 
 export default function SeoPage() {
   const { toast } = useToast();
@@ -71,13 +72,17 @@ export default function SeoPage() {
   }
 
   return (
-    <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+    <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-charcoal-900">SEO</h1>
+        <h1 className="font-display text-2xl font-semibold text-charcoal-900">SEO Management</h1>
         <p className="mt-1 text-sm text-charcoal-500">
-          Site-wide search and social sharing defaults, plus analytics/pixel IDs used across every page.
+          Per-page search settings, site-wide defaults, and the analytics/pixel IDs used across every page.
         </p>
       </div>
+
+      <SeoPagesCard />
+
+      <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
 
       <Card>
         <CardHeader>
@@ -143,6 +148,7 @@ export default function SeoPage() {
           {submitting ? 'Saving…' : 'Save changes'}
         </Button>
       </div>
-    </form>
+      </form>
+    </div>
   );
 }

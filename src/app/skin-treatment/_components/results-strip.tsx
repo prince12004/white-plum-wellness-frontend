@@ -2,9 +2,11 @@ import { Container, Section, SectionHeading } from '@/components/ui/container';
 import { BeforeAfterSlider } from '@/components/before-after-slider';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { getResultsByCategory } from '@/data/before-after';
+import { sectionContent, type SectionProps } from '@/lib/cms/sections';
 
-export async function ResultsStrip() {
-  const results = await getResultsByCategory('Skin');
+export async function ResultsStrip({ content }: SectionProps) {
+  const c = sectionContent('landing-results', content);
+  const results = await getResultsByCategory(c.category);
   const featured = results.slice(0, 4);
 
   if (featured.length === 0) return null;
@@ -13,9 +15,9 @@ export async function ResultsStrip() {
     <Section tone="muted">
       <Container>
         <SectionHeading
-          eyebrow="Real Results"
-          title="Real Skin Transformations"
-          description="Drag the slider to see the difference — genuine patient results, not stock photos."
+          eyebrow={c.eyebrow}
+          title={c.title}
+          description={c.description}
         />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {featured.map((result, i) => (
@@ -25,10 +27,7 @@ export async function ResultsStrip() {
             </ScrollReveal>
           ))}
         </div>
-        <p className="mt-6 text-center text-xs text-charcoal-400">
-          Individual results vary by skin type and condition. A dermatologist will assess suitability during your
-          consultation.
-        </p>
+        {c.footnote && <p className="mt-6 text-center text-xs text-charcoal-400">{c.footnote}</p>}
       </Container>
     </Section>
   );

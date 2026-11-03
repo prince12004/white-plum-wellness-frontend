@@ -3,8 +3,10 @@ import { Container, Section, SectionHeading } from '@/components/ui/container';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
 import { getAllClinics } from '@/data/clinics';
+import { sectionContent, type SectionProps } from '@/lib/cms/sections';
 
-export async function ReachUsSection() {
+export async function ReachUsSection({ content }: SectionProps) {
+  const c = sectionContent('landing-reach', content);
   const clinics = await getAllClinics();
   const featured = clinics.slice(0, 3);
 
@@ -13,7 +15,7 @@ export async function ReachUsSection() {
   return (
     <Section>
       <Container>
-        <SectionHeading eyebrow="Visit Us" title="Reach Us" />
+        <SectionHeading eyebrow={c.eyebrow} title={c.title} description={c.description} />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {featured.map((clinic, i) => (
             <ScrollReveal key={clinic.slug} delay={i * 100}>

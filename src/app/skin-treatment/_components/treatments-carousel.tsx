@@ -7,7 +7,7 @@ import { cn } from '@white/ui';
 import type { Service } from '@/data/services';
 import { TreatmentOfferCardContent } from './treatment-offer-card';
 
-export function TreatmentsCarousel({ services }: { services: Service[] }) {
+export function TreatmentsCarousel({ services, ctaLabel }: { services: Service[]; ctaLabel: string }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start', slidesToScroll: 1 }, []);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
@@ -38,7 +38,7 @@ export function TreatmentsCarousel({ services }: { services: Service[] }) {
         <div className="-ml-4 flex">
           {services.map((service) => (
             <div key={service.slug} className="min-w-0 shrink-0 grow-0 basis-1/4 pl-4">
-              <TreatmentOfferCardContent service={service} />
+              <TreatmentOfferCardContent service={service} ctaLabel={ctaLabel} />
             </div>
           ))}
         </div>

@@ -4,15 +4,18 @@ import { Container, Section, SectionHeading } from '@/components/ui/container';
 import { BeforeAfterSlider } from '@/components/before-after-slider';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { getAllBeforeAfterResults } from '@/data/before-after';
+import { safeHref } from '@/lib/cms/href';
+import { sectionContent, type SectionProps } from '@/lib/cms/sections';
 
-export async function BeforeAfterSection() {
+export async function BeforeAfterSection({ content }: SectionProps) {
+  const c = sectionContent('before-after', content);
   const beforeAfterResults = await getAllBeforeAfterResults();
   const featured = beforeAfterResults.slice(0, 3);
 
   return (
     <Section tone="muted">
       <Container>
-        <SectionHeading eyebrow="Real Results" title="Before & After" description="Drag the slider to see the difference — real patient results across our most requested treatments." />
+        <SectionHeading eyebrow={c.eyebrow} title={c.title} description={c.description} />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {featured.map((result, i) => (
             <ScrollReveal key={result.id} delay={i * 100} className="flex flex-col gap-3">
@@ -24,11 +27,13 @@ export async function BeforeAfterSection() {
             </ScrollReveal>
           ))}
         </div>
-        <ScrollReveal delay={300} className="mt-10 text-center">
-          <Link href="/results">
-            <Button variant="secondary" size="lg">View All Results</Button>
-          </Link>
-        </ScrollReveal>
+        {c.ctaLabel && (
+          <ScrollReveal delay={300} className="mt-10 text-center">
+            <Link href={safeHref(c.ctaHref)}>
+              <Button variant="secondary" size="lg">{c.ctaLabel}</Button>
+            </Link>
+          </ScrollReveal>
+        )}
       </Container>
     </Section>
   );

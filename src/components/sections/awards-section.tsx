@@ -2,10 +2,11 @@ import { Quote } from 'lucide-react';
 import { Container, Section } from '@/components/ui/container';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { Marquee } from '@/components/ui/marquee';
-import { awards, mediaLogos } from '@/data/content';
+import { sectionContent, type SectionProps } from '@/lib/cms/sections';
 
-export function AwardsSection() {
-  const [headline, ...rest] = awards;
+export function AwardsSection({ content }: SectionProps) {
+  const c = sectionContent('awards', content);
+  const [headline, ...rest] = c.items;
 
   return (
     <Section tone="muted">
@@ -40,9 +41,9 @@ export function AwardsSection() {
         </div>
 
         <div className="mt-16 border-t border-charcoal-900/10 pt-10">
-          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-charcoal-400">As featured in</p>
+          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-charcoal-400">{c.mediaLabel}</p>
           <Marquee durationSeconds={24}>
-            {mediaLogos.map((logo) => (
+            {c.mediaLogos.map((logo) => (
               <span
                 key={logo}
                 className="rounded-full border border-charcoal-900/15 px-5 py-2 font-display text-sm text-charcoal-700"

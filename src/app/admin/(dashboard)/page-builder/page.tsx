@@ -15,6 +15,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -34,7 +35,7 @@ export default function PageBuilderPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      setPages(await apiClient.get<PaginatedResponse<CustomPage>>('/custom-pages/admin?pageSize=50'));
+      setPages(await apiClient.get<PaginatedResponse<CustomPage>>('/custom-pages/admin?pageSize=100'));
     } finally {
       setLoading(false);
     }
@@ -43,6 +44,20 @@ export default function PageBuilderPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  async function togglePublished(page: CustomPage, isPublished: boolean) {
+    try {
+      await apiClient.patch(`/custom-pages/${page.id}`, { isPublished });
+      toast({ title: `${page.title} ${isPublished ? 'published' : 'unpublished'}` });
+      load();
+    } catch (err) {
+      toast({
+        title: 'Could not update page',
+        description: err instanceof ApiRequestError ? err.message : undefined,
+        variant: 'destructive',
+      });
+    }
+  }
 
   async function handleDelete() {
     if (!deleteTarget) return;
@@ -64,8 +79,8 @@ export default function PageBuilderPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-2xl font-semibold text-charcoal-900">Custom Pages</h1>
-          <p className="mt-1 text-sm text-charcoal-500">Standalone content pages shown on the public site.</p>
+          <h1 className="font-display text-2xl font-semibold text-charcoal-900">Pages Management</h1>
+          <p className="mt-1 text-sm text-charcoal-500">Create, edit, publish and remove website pages.</p>
         </div>
         <Link href="/admin/page-builder/new">
           <Button>New page</Button>
@@ -98,19 +113,35 @@ export default function PageBuilderPage() {
                     <TableCell className="font-medium text-charcoal-900">{page.title}</TableCell>
                     <TableCell className="text-charcoal-500">/{page.slug}</TableCell>
                     <TableCell>
-                      {page.isPublished ? <Badge variant="success">Published</Badge> : <Badge variant="warning">Draft</Badge>}
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          aria-label={`Publish ${page.title}`}
+                          checked={page.isPublished}
+                          onCheckedChange={(checked) => togglePublished(page, checked)}
+                        />
+                        {page.isPublished ? <Badge variant="success">Published</Badge> : <Badge variant="warning">Draft</Badge>}
+                      </div>
                     </TableCell>
                     <TableCell>{new Date(page.updatedAt).toLocaleDateString()}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
+                        {page.isPublished && (
+                          <a href={`/${page.slug}`} target="_blank" rel="noopener noreferrer">
+                            <Button size="sm" variant="ghost">
+                              View
+                            </Button>
+                          </a>
+                        )}
                         <Link href={`/admin/page-builder/${page.slug}/edit`}>
                           <Button size="sm" variant="ghost">
                             Edit
                           </Button>
                         </Link>
-                        <Button size="sm" variant="destructive" onClick={() => setDeleteTarget(page)}>
-                          Delete
-                        </Button>
+                        {!page.systemKey && (
+                          <Button size="sm" variant="destructive" onClick={() => setDeleteTarget(page)}>
+                            Delete
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

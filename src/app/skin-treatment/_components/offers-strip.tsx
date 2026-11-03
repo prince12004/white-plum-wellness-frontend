@@ -3,13 +3,13 @@ import { Container, Section, SectionHeading } from '@/components/ui/container';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
 import { getAllOffers } from '@/data/offers';
+import { sectionContent, type SectionProps } from '@/lib/cms/sections';
 
-const SKIN_KEYWORDS = ['skin', 'pigmentation', 'acne', 'hydrafacial', 'glow', 'facial', 'consultation', 'first visit'];
-
-export async function OffersStrip() {
+export async function OffersStrip({ content }: SectionProps) {
+  const c = sectionContent('landing-offers', content);
   const offers = await getAllOffers();
   const relevant = offers
-    .filter((o) => SKIN_KEYWORDS.some((kw) => o.title.toLowerCase().includes(kw)))
+    .filter((o) => c.keywords.some((kw) => o.title.toLowerCase().includes(kw.toLowerCase())))
     .slice(0, 4);
 
   if (relevant.length === 0) return null;
@@ -17,7 +17,7 @@ export async function OffersStrip() {
   return (
     <Section>
       <Container>
-        <SectionHeading eyebrow="Current Offers" title="Special Offers on Skin Care" />
+        <SectionHeading eyebrow={c.eyebrow} title={c.title} description={c.description} />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {relevant.map((offer, i) => (
             <ScrollReveal key={offer.id} delay={i * 80}>
@@ -41,7 +41,7 @@ export async function OffersStrip() {
                   </p>
                 )}
                 <WhatsappCtaLink context={{ offer: offer.title }} className="h-9 w-full text-xs">
-                  Claim This Offer
+                  {c.cardCtaLabel}
                 </WhatsappCtaLink>
               </div>
             </ScrollReveal>

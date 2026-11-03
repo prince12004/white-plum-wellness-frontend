@@ -13,7 +13,7 @@ const telHref = `tel:${siteConfig.contactPhone.replace(/[^\d+]/g, '')}`;
 /** Deliberately nav-free — this is a Google Ads landing page, not the main
  * site shell, so there's nothing here to click except the two conversion
  * actions (call / WhatsApp). No menu, no links away from the page. */
-export function LandingTopBar() {
+export function LandingTopBar({ service }: { service: string }) {
   return (
     <motion.header
       initial={{ y: -16, opacity: 0 }}
@@ -34,7 +34,7 @@ export function LandingTopBar() {
             <Phone className="h-[1.15rem] w-[1.15rem]" />
           </a>
           <WhatsappCtaLink
-            context={{ service: 'Skin Treatment' }}
+            context={{ service }}
             variant="icon"
             aria-label="Chat on WhatsApp"
             className="h-10 w-10"
