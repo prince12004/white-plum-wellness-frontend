@@ -13,7 +13,7 @@ export function GalleryStrip({ content }: SectionProps) {
           {c.items.map((img, i) =>
             img.image ? (
               <ImageReveal key={i} delay={i * 80} className="relative aspect-square rounded-2xl">
-                <Image src={img.image} alt={img.alt} fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover" />
+                {img.image && <Image src={img.image} alt={img.alt} fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover" />}
               </ImageReveal>
             ) : null,
           )}

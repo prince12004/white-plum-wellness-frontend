@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Menu, Phone, User, X } from 'lucide-react';
 import { cn } from '@white/ui';
-import { primaryNav } from '@/data/nav';
+import type { NavGroup } from '@/data/nav';
 import { siteConfig } from '@/data/site';
 import { BookAppointmentButton } from '@/components/booking/book-appointment-button';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
@@ -69,7 +69,7 @@ const headerItem = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
 };
 
-export function Header() {
+export function Header({ nav }: { nav: NavGroup[] }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMega, setOpenMega] = useState<string | null>(null);
@@ -111,7 +111,7 @@ export function Header() {
           </motion.div>
 
           <motion.nav variants={headerItem} className="hidden items-center gap-0.5 lg:flex" onMouseLeave={() => setOpenMega(null)}>
-            {primaryNav.map((item) => {
+            {nav.map((item) => {
               const isActive = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href));
               return (
                 <div key={item.href} className="group relative" onMouseEnter={() => setOpenMega(item.megaMenu ? item.label : null)}>
@@ -213,7 +213,7 @@ export function Header() {
         </motion.div>
       </header>
 
-      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileMenu nav={nav} open={mobileOpen} onClose={() => setMobileOpen(false)} />
     </>
   );
 }

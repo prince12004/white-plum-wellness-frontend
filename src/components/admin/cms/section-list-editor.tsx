@@ -105,7 +105,10 @@ export function SectionListEditor({ sections, onChange }: { sections: CmsSection
             {/* Only this header row is draggable — a draggable ancestor would stop text selection in the form fields below. */}
             <div
               draggable
-              onDragStart={() => setDragIndex(i)}
+              onDragStart={(e) => {
+                e.dataTransfer.setData('text/plain', section.id);
+                setDragIndex(i);
+              }}
               onDragEnd={() => {
                 setDragIndex(null);
                 setDropIndex(null);
@@ -118,6 +121,10 @@ export function SectionListEditor({ sections, onChange }: { sections: CmsSection
                   {sectionTitle(section)}
                 </p>
                 {definition && section.label && <p className="truncate text-xs text-charcoal-400">{definition.label}</p>}
+                {/* Tells apart several sections of one type, such as two "Live data list" rows. */}
+                {!section.label && typeof section.content.title === 'string' && section.content.title && (
+                  <p className="truncate text-xs text-charcoal-400">{section.content.title}</p>
+                )}
               </div>
               {section.isActive ? <Badge variant="success">Active</Badge> : <Badge variant="warning">Inactive</Badge>}
               <Switch

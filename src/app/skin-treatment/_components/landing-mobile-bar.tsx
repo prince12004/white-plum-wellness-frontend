@@ -8,7 +8,7 @@ import { EASE } from '@/lib/motion';
 /** This route lives outside the (site) layout group (deliberately nav-free
  * for conversion focus), so it doesn't inherit the site-wide MobileStickyBar —
  * this is its own copy, scoped to this page only. */
-export function LandingMobileBar({ service }: { service: string }) {
+export function LandingMobileBar({ service, ctaLabel, whatsappLabel }: { service: string; ctaLabel: string; whatsappLabel: string }) {
   const bookingContext = { service };
   return (
     <motion.div
@@ -18,11 +18,13 @@ export function LandingMobileBar({ service }: { service: string }) {
       className="fixed inset-x-0 bottom-0 z-30 flex gap-2.5 border-t border-ivory-200 bg-white/90 p-3 shadow-[0_-8px_24px_-4px_rgba(33,26,23,0.1)] backdrop-blur-md lg:hidden"
       style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
     >
-      <WhatsappCtaLink context={bookingContext} className="h-11 flex-1">
-        WhatsApp
-      </WhatsappCtaLink>
+      {whatsappLabel && (
+        <WhatsappCtaLink context={bookingContext} className="h-11 flex-1">
+          {whatsappLabel}
+        </WhatsappCtaLink>
+      )}
       <BookAppointmentButton context={bookingContext} className="h-11 flex-1">
-        Book Free Consultation
+        {ctaLabel}
       </BookAppointmentButton>
     </motion.div>
   );

@@ -1,6 +1,6 @@
 import type { CmsSection, CustomPage, HomepageContent } from '@white/types';
-import { awards, mediaLogos, stats, treatmentJourney, whyChooseUs } from '@/data/content';
-import { placeholderImage } from '@/data/images';
+import { awards, bridalTimeline, forMenSections, mediaLogos, stats, treatmentJourney, whyChooseUs } from '@/data/content';
+import { avatarImage, placeholderImage } from '@/data/images';
 
 /**
  * Single source of truth for CMS sections: each type's default content and the
@@ -26,6 +26,13 @@ const list = (key: string, label: string, fields: CmsField[], hint?: string): Cm
 const heading = [text('eyebrow', 'Small label above heading'), text('title', 'Heading'), area('description', 'Description')];
 const linkButton = [text('ctaLabel', 'Button text'), url('ctaHref', 'Button link')];
 const BOOKING_LINK_HINT = 'Leave empty to open the booking form.';
+
+const DEFAULT_AVATARS = ['t1', 't3', 't5', 't9'].map((seed) => ({ image: avatarImage(seed, 56) }));
+
+const DATA_SOURCES = [
+  'services', 'featured services', 'popular services', 'service links', 'categories', 'packages', 'offers', 'doctors', 'clinics',
+  'clinics with city filter', 'concerns', 'testimonials', 'faqs', 'blogs', 'gallery', 'results',
+];
 
 const DEFAULTS = {
   // ── Homepage ──
@@ -57,6 +64,7 @@ const DEFAULTS = {
     ratingTitle: '4.9 / 5',
     ratingNote: 'from 2,400+ verified reviews',
     ratingFooter: 'Loved by patients across 5 cities',
+    avatars: DEFAULT_AVATARS,
   },
   'trust-stats': { items: stats },
   'treatment-categories': {
@@ -122,6 +130,8 @@ const DEFAULTS = {
     title: 'Find Your Clinic',
     description: 'Five clinics, one consistent standard of care — choose the one closest to you.',
     image: placeholderImage('map-placeholder', 700, 900),
+    filterLabel: 'Filter by city',
+    allCitiesLabel: 'All Cities',
   },
   offers: {
     eyebrow: 'Limited Time',
@@ -175,6 +185,7 @@ const DEFAULTS = {
       { icon: 'Sparkles', label: 'Advanced, Painless Protocols' },
     ],
     ratingNote: '4.9/5 from 2,400+ verified reviews',
+    avatars: DEFAULT_AVATARS,
   },
   'landing-usp': {
     items: [
@@ -224,6 +235,8 @@ const DEFAULTS = {
     description: '',
     doctorSlug: 'dr-anika-sharma',
     bookingService: 'Skin Treatment',
+    ctaLabel: '',
+    whatsappLabel: 'WhatsApp',
   },
   'landing-gallery': {
     eyebrow: 'Inside Our Clinic',
@@ -286,6 +299,7 @@ const DEFAULTS = {
     eyebrow: '',
     title: 'Section heading',
     description: '',
+    tone: 'muted',
     items: [{ icon: 'Sparkles', image: '', title: 'Card title', description: '', ctaLabel: '', ctaHref: '' }],
   },
   cta: {
@@ -295,8 +309,39 @@ const DEFAULTS = {
     ctaHref: '',
     whatsappLabel: 'WhatsApp Us',
     backgroundImage: '',
+    bookingPackage: '',
   },
   divider: { tone: 'default' },
+  'page-header': {
+    eyebrow: '',
+    title: 'Page heading',
+    description: '',
+    image: '',
+    imageAlt: '',
+    ctaLabel: '',
+    ctaHref: '',
+    whatsappLabel: '',
+    bookingPackage: '',
+  },
+  'data-list': {
+    eyebrow: '',
+    title: '',
+    description: '',
+    source: 'services',
+    categorySlug: '',
+    keyword: '',
+    limit: 0,
+    align: 'center',
+    tone: 'default',
+  },
+  timeline: { eyebrow: '', title: 'Section heading', description: '', tone: 'default', items: [{ month: '', title: 'Step title', description: '' }] },
+  'contact-panel': {
+    eyebrow: 'Send a Message',
+    title: 'Contact Form',
+    quickContactTitle: 'Quick Contact',
+    whatsappLabel: 'WhatsApp Us',
+    clinicsTitle: 'Our Clinics',
+  },
 };
 
 export type SectionType = keyof typeof DEFAULTS;
@@ -343,6 +388,7 @@ export const SECTION_DEFINITIONS: Record<SectionType, SectionDefinition> = {
       text('ratingTitle', 'Rating card — score'),
       text('ratingNote', 'Rating card — note'),
       text('ratingFooter', 'Rating card — footer'),
+      list('avatars', 'Rating card — photos', [image('image', 'Photo')]),
     ],
   },
   'trust-stats': {
@@ -400,7 +446,7 @@ export const SECTION_DEFINITIONS: Record<SectionType, SectionDefinition> = {
     label: 'Clinic locator',
     group: 'Website sections',
     dataNote: 'Clinics are managed under Content → Clinics.',
-    fields: [...heading, image('image', 'Side image')],
+    fields: [...heading, image('image', 'Side image'), text('filterLabel', 'City filter label'), text('allCitiesLabel', 'All cities option')],
   },
   offers: {
     label: 'Offers',
@@ -450,6 +496,7 @@ export const SECTION_DEFINITIONS: Record<SectionType, SectionDefinition> = {
       text('bookingConcern', 'Booking form — concern'),
       list('trustIndicators', 'Trust badges', [icon(), text('label', 'Text')]),
       text('ratingNote', 'Rating note'),
+      list('avatars', 'Rating photos', [image('image', 'Photo')]),
     ],
   },
   'landing-usp': { label: 'USP bar', group: 'Landing page sections', fields: [list('items', 'Items', [icon(), text('label', 'Text')])] },
@@ -485,7 +532,13 @@ export const SECTION_DEFINITIONS: Record<SectionType, SectionDefinition> = {
     label: 'Doctor spotlight',
     group: 'Landing page sections',
     dataNote: 'Doctor details are managed under Content → Doctors.',
-    fields: [...heading, text('doctorSlug', 'Doctor slug'), text('bookingService', 'Booking form — treatment name')],
+    fields: [
+      ...heading,
+      text('doctorSlug', 'Doctor slug'),
+      text('bookingService', 'Booking form — treatment name'),
+      text('ctaLabel', 'Button text', "Leave empty to use the doctor's name."),
+      text('whatsappLabel', 'WhatsApp button text', 'Leave empty to hide the button.'),
+    ],
   },
   'landing-gallery': {
     label: 'Image gallery',
@@ -519,7 +572,7 @@ export const SECTION_DEFINITIONS: Record<SectionType, SectionDefinition> = {
     fields: [
       text('eyebrow', 'Small label above heading'),
       text('title', 'Heading'),
-      { key: 'body', label: 'Text', kind: 'richtext', hint: 'Blank line = new paragraph. Start a line with "## " for a subheading or "- " for a bullet.' },
+      { key: 'body', label: 'Text', kind: 'richtext', hint: 'Blank line = new paragraph. Start a line with "## " for a subheading or "- " for a bullet. {clinics}, {doctors}, {services} and {categories} show live counts.' },
       image('image', 'Image'),
       text('imageAlt', 'Image description (for SEO)'),
       { key: 'imagePosition', label: 'Image side', kind: 'select', options: ['left', 'right'] },
@@ -531,6 +584,7 @@ export const SECTION_DEFINITIONS: Record<SectionType, SectionDefinition> = {
     group: 'Content blocks',
     fields: [
       ...heading,
+      { key: 'tone', label: 'Background', kind: 'select', options: ['muted', 'default'] },
       list('items', 'Cards', [
         icon(),
         image('image', 'Image', 'Replaces the icon when set.'),
@@ -550,12 +604,65 @@ export const SECTION_DEFINITIONS: Record<SectionType, SectionDefinition> = {
       url('ctaHref', 'Button link', BOOKING_LINK_HINT),
       text('whatsappLabel', 'WhatsApp button text', 'Leave empty to hide the button.'),
       image('backgroundImage', 'Background image'),
+      text('bookingPackage', 'Booking form — package name'),
     ],
   },
   divider: {
     label: 'Gold divider',
     group: 'Content blocks',
     fields: [{ key: 'tone', label: 'Background', kind: 'select', options: ['default', 'muted'], hint: 'Match the section above it.' }],
+  },
+  'page-header': {
+    label: 'Page header',
+    group: 'Content blocks',
+    fields: [
+      text('eyebrow', 'Small label above heading'),
+      text('title', 'Page heading'),
+      area('description', 'Description', '{clinics}, {doctors}, {services} and {categories} show live counts.'),
+      image('image', 'Background image', 'Leave empty for the plain light header.'),
+      text('imageAlt', 'Image description (for SEO)'),
+      text('ctaLabel', 'Button text', 'Leave empty to hide the button.'),
+      url('ctaHref', 'Button link', BOOKING_LINK_HINT),
+      text('whatsappLabel', 'WhatsApp button text', 'Leave empty to hide the button.'),
+      text('bookingPackage', 'Booking form — package name'),
+    ],
+  },
+  'data-list': {
+    label: 'Live data list',
+    group: 'Content blocks',
+    dataNote: 'Shows live items from the matching screen under Content, such as Services, Doctors or Offers.',
+    fields: [
+      text('eyebrow', 'Small label above heading'),
+      text('title', 'Heading', 'Leave empty to show the list without a heading.'),
+      area('description', 'Description'),
+      { key: 'source', label: 'What to show', kind: 'select', options: DATA_SOURCES },
+      text('categorySlug', 'Only this category (slug)', 'Used by services and packages. Leave empty for all.'),
+      text('keyword', 'Only testimonials mentioning', 'Leave empty for featured testimonials.'),
+      { key: 'limit', label: 'Maximum items', kind: 'number', hint: '0 shows everything.' },
+      { key: 'align', label: 'Heading alignment', kind: 'select', options: ['center', 'left'] },
+      { key: 'tone', label: 'Background', kind: 'select', options: ['default', 'muted'] },
+    ],
+  },
+  timeline: {
+    label: 'Timeline',
+    group: 'Content blocks',
+    fields: [
+      ...heading,
+      { key: 'tone', label: 'Background', kind: 'select', options: ['default', 'muted'] },
+      list('items', 'Steps', [text('month', 'When'), text('title', 'Title'), area('description', 'Description')]),
+    ],
+  },
+  'contact-panel': {
+    label: 'Contact form and details',
+    group: 'Content blocks',
+    dataNote: 'Clinics are managed under Content → Clinics.',
+    fields: [
+      text('eyebrow', 'Small label above heading'),
+      text('title', 'Form heading'),
+      text('quickContactTitle', 'Contact card heading'),
+      text('whatsappLabel', 'WhatsApp button text', 'Leave empty to hide the button.'),
+      text('clinicsTitle', 'Clinics card heading'),
+    ],
   },
 };
 
@@ -600,6 +707,140 @@ const SKIN_TREATMENT_TYPES: SectionType[] = [
   'landing-reach', 'final-cta',
 ];
 
+type SectionSeed = [SectionType, Record<string, unknown>?];
+
+const dataList = (source: string, eyebrow: string, title: string, extra: Record<string, unknown> = {}): SectionSeed => [
+  'data-list',
+  { source, eyebrow, title, align: 'left', ...extra },
+];
+const pageHeader = (title: string, description: string, extra: Record<string, unknown> = {}): SectionSeed => ['page-header', { title, description, ...extra }];
+const muted = { tone: 'muted' };
+
+/** What each built-in page shows until an admin first saves it in Pages Management. */
+const BUILT_IN_PAGES: Record<string, SectionSeed[]> = {
+  about: [
+    pageHeader('Care Built on Honesty, Not Hype', '', { eyebrow: 'About White Plum Wellness', image: placeholderImage('about-hero', 1600, 900), imageAlt: 'Our clinic' }),
+    ['text-image', {
+      eyebrow: 'Our Story',
+      title: 'Why We Started',
+      image: placeholderImage('about-story', 900, 700),
+      imageAlt: 'Our story',
+      imagePosition: 'left',
+      body: "White Plum Wellness was founded on a simple frustration: too many patients were being sold treatments before anyone properly diagnosed what they actually needed. We set out to build a clinic where the consultation comes first, always.\n\nToday, we operate {clinics} clinics with a team of {doctors}+ specialists, but the founding principle hasn't changed — real assessment, honest timelines, and treatment plans built around you, not a fixed package.",
+    }],
+    ['cards', {
+      title: 'What Guides Us',
+      items: [
+        { icon: 'Heart', image: '', title: 'Our Philosophy', description: 'Diagnose first, treat second — never the other way around.', ctaLabel: '', ctaHref: '' },
+        { icon: 'Target', image: '', title: 'Our Mission', description: 'Make expert dermatology care accessible, honest, and personalised.', ctaLabel: '', ctaHref: '' },
+        { icon: 'Star', image: '', title: 'Our Vision', description: 'To be the clinic patients trust enough to refer their own family to.', ctaLabel: '', ctaHref: '' },
+      ],
+    }],
+    ['cards', {
+      eyebrow: 'Why Patients Choose Us',
+      title: 'Why Choose Us',
+      tone: 'default',
+      items: whyChooseUs.map((item) => ({ ...item, image: '', ctaLabel: '', ctaHref: '' })),
+    }],
+    dataList('doctors', 'Meet the Team', 'Our Doctors', { limit: 4, ...muted }),
+    dataList('clinics', 'Visit Us', 'Our Clinics', { limit: 4 }),
+    ['awards'],
+    dataList('testimonials', 'Patient Stories', 'Testimonials', { limit: 3 }),
+    ['cta', { title: 'Come see the difference in person', ctaLabel: 'Book Consultation', whatsappLabel: '' }],
+  ],
+  services: [
+    pageHeader('All Treatments', "{services}+ treatments across {categories} specialities — browse by category or explore what's featured below."),
+    dataList('categories', 'Browse by Category', 'Choose a Speciality'),
+    dataList('featured services', "Editor's Pick", 'Featured Services', muted),
+    dataList('popular services', 'Most Requested', 'Popular Services'),
+    dataList('service links', 'Everything We Offer', 'All Services', muted),
+    dataList('faqs', 'Questions', 'Frequently Asked Questions', { align: 'center', limit: 6 }),
+    ['cta', { title: 'Not sure where to start?', description: "Book a free consultation and we'll guide you to the right treatment.", ctaLabel: 'Book Free Consultation', whatsappLabel: '' }],
+  ],
+  concerns: [
+    pageHeader("What's Bothering You?", "Start with your concern and we'll point you to the treatments, doctors, and packages that address it."),
+    dataList('concerns', '', ''),
+  ],
+  packages: [
+    pageHeader('Treatment Packages', 'Structured programs designed around specific goals, combining multiple sessions at a transparent, upfront price.'),
+    dataList('packages', '', ''),
+  ],
+  offers: [
+    pageHeader('Current Offers', "From free consultations to seasonal package pricing — here's what's currently available."),
+    dataList('offers', '', ''),
+  ],
+  doctors: [
+    pageHeader('Meet Our Doctors', 'Every treatment is led by a qualified dermatologist or aesthetic specialist — not a technician following a script.'),
+    dataList('doctors', '', ''),
+  ],
+  clinics: [
+    pageHeader('Our Clinics', '{clinics} clinics across India, each delivering the same standard of care.'),
+    dataList('clinics with city filter', '', ''),
+  ],
+  results: [
+    pageHeader('Before & After Results', 'Drag the slider on any result to see the difference. Results shown are illustrative and vary by individual.'),
+    dataList('results', '', ''),
+  ],
+  gallery: [
+    pageHeader('Gallery', 'A look inside our clinics, treatments, team, and events.'),
+    dataList('gallery', '', ''),
+  ],
+  blogs: [
+    pageHeader('From Our Doctors', 'Practical, honest guidance on skin, hair, and aesthetic care — no miracle cures.'),
+    dataList('blogs', '', ''),
+  ],
+  bridal: [
+    pageHeader('A Glow Worth Planning For', 'A timed treatment journey across skin, hair, and body — planned backward from your wedding date.', {
+      eyebrow: 'Bridal Journey',
+      image: placeholderImage('bridal-hero', 1600, 900),
+      imageAlt: 'Bridal',
+      ctaLabel: 'Book Bridal Consultation',
+      whatsappLabel: 'WhatsApp Now',
+      bookingPackage: 'Bridal Glow Package',
+    }),
+    ['timeline', { eyebrow: 'Plan Ahead', title: 'Your Bridal Timeline', description: 'A realistic timeline that avoids last-minute skin surprises.', items: bridalTimeline }],
+    dataList('services', 'Skin, Hair & Body', 'Bridal Treatments', { categorySlug: 'bridal', ...muted }),
+    dataList('packages', 'Curated for You', 'Bridal Packages', { categorySlug: 'bridal' }),
+    ['before-after', { eyebrow: 'Real Results', title: 'Before & After', description: '', ctaLabel: '', ctaHref: '' }],
+    dataList('testimonials', "A Real Bride's Story", 'Testimonial', { keyword: 'bridal', limit: 1, align: 'center' }),
+    dataList('faqs', 'Questions', 'Frequently Asked Questions', { align: 'center', limit: 5, ...muted }),
+    ['cta', { title: 'Start planning your bridal glow today', ctaLabel: 'Book Bridal Consultation', whatsappLabel: '', bookingPackage: 'Bridal Glow Package' }],
+  ],
+  'for-men': [
+    pageHeader('Practical Skin, Hair & Body Care — Built for Men', 'No fuss, no jargon — just effective treatment for the concerns men actually come in for.', {
+      eyebrow: 'For Men',
+      image: placeholderImage('for-men-hero', 1600, 900),
+      imageAlt: 'For Men',
+      ctaLabel: 'Book Consultation',
+      whatsappLabel: 'WhatsApp Now',
+    }),
+    ['cards', {
+      eyebrow: 'What We Cover',
+      title: 'Focus Areas',
+      tone: 'default',
+      items: forMenSections.map((section) => ({
+        icon: 'Sparkles',
+        image: section.image,
+        title: section.title,
+        description: section.description,
+        ctaLabel: 'Explore',
+        ctaHref: `/services/${section.slug === 'beard' || section.slug === 'acne' ? 'skin' : section.slug}`,
+      })),
+    }],
+    dataList('services', 'Popular With Our Patients', 'Recommended Treatments', { limit: 6, align: 'center', ...muted }),
+    ['cta', { title: 'Ready to get started?', ctaLabel: 'Book Consultation', whatsappLabel: '' }],
+  ],
+  contact: [
+    pageHeader('Get in Touch', 'Have a question, or ready to book? Reach out however works best for you.'),
+    ['contact-panel'],
+  ],
+};
+
+/** Built-in pages have their own route, so their URL and layout are fixed. */
+export function isFixedRoutePage(systemKey: string | null | undefined): boolean {
+  return Boolean(systemKey && systemKey in BUILT_IN_PAGES);
+}
+
 /** Before the first publish, the homepage is its built-in layout plus whatever the
  * old Homepage CMS screen had saved (hero slides and featured picks). */
 export function resolveHomepageSections(home: HomepageContent): CmsSection[] {
@@ -622,6 +863,15 @@ export function resolvePageSections(page: Pick<CustomPage, 'sections' | 'systemK
       // The divider after the process section sits on the muted background.
       SKIN_TREATMENT_TYPES[i - 1] === 'landing-why' ? { ...section, content: { tone: 'muted' } } : section,
     );
+  }
+  const builtIn = page.systemKey ? BUILT_IN_PAGES[page.systemKey] : undefined;
+  if (builtIn) {
+    return builtIn.map(([type, content], i) => ({
+      id: `${page.systemKey}-${i}`,
+      type,
+      isActive: true,
+      content: { ...structuredClone(DEFAULTS[type]), ...content },
+    }));
   }
   if (page.body) return [{ id: 'body', type: 'rich-text', isActive: true, content: { body: page.body } }];
   return [];

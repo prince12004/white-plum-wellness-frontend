@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Facebook, Instagram, Mail, MapPin, Phone, ShieldCheck, Sparkles, Users, Youtube } from 'lucide-react';
-import { footerNav } from '@/data/nav';
+import { footerNav, type NavLink } from '@/data/nav';
+import { getNavData } from '@/data/nav-pages';
 import { siteConfig } from '@/data/site';
 import { Logo } from '@/components/logo';
 import { Stagger, FadeUp } from '@/components/ui/motion';
@@ -16,7 +17,15 @@ const footerLinkClass =
 const socialIconClass =
   'flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-peach-500';
 
-export function Footer() {
+export async function Footer() {
+  const { pages, hiddenSlugs } = await getNavData();
+  const hidden = new Set(hiddenSlugs.map((slug) => `/${slug}`));
+  const visible = (link: NavLink) => !hidden.has(link.href);
+  const explore = [
+    ...footerNav.explore,
+    ...pages.filter((page) => page.showInFooter).map((page) => ({ label: page.title, href: `/${page.slug}` })),
+  ].filter(visible);
+
   return (
     // A genuinely different hue from the Final CTA's neutral charcoal-900 (not just
     // another near-black) — a deep wine/plum, so the seam between the two sections
@@ -57,7 +66,7 @@ export function Footer() {
           <FadeUp>
             <p className="font-display text-xs uppercase tracking-[0.2em] text-gold-300">Explore</p>
             <ul className="mt-4 flex flex-col gap-2">
-              {footerNav.explore.map((link) => (
+              {explore.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className={footerLinkClass}>
                     {link.label}
@@ -70,7 +79,7 @@ export function Footer() {
           <FadeUp>
             <p className="font-display text-xs uppercase tracking-[0.2em] text-gold-300">Programs</p>
             <ul className="mt-4 flex flex-col gap-2">
-              {footerNav.programs.map((link) => (
+              {footerNav.programs.filter(visible).map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className={footerLinkClass}>
                     {link.label}
@@ -104,7 +113,7 @@ export function Footer() {
           className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 border-t border-gold-300/20 pt-4 text-center text-[0.7rem] font-medium uppercase tracking-wide text-gold-200/70 sm:justify-between sm:text-left"
         >
           <p>© {new Date().getFullYear()} {siteConfig.businessName} — All Rights Reserved</p>
-          <p className="normal-case tracking-normal text-ivory-200/45">Demo content for design review only. Results are illustrative and vary by individual.</p>
+          <p className="normal-case tracking-normal text-ivory-200/45">Results are illustrative and vary by individual.</p>
         </FadeUp>
       </div>
     </footer>

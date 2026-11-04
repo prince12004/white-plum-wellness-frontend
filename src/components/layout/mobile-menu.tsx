@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronDown, X } from 'lucide-react';
 import { cn } from '@white/ui';
-import { primaryNav } from '@/data/nav';
+import type { NavGroup } from '@/data/nav';
 import { siteConfig } from '@/data/site';
 import { BookAppointmentButton } from '@/components/booking/book-appointment-button';
 import { EASE } from '@/lib/motion';
@@ -19,7 +19,7 @@ const menuItem = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: EASE } },
 };
 
-export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function MobileMenu({ nav, open, onClose }: { nav: NavGroup[]; open: boolean; onClose: () => void }) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
           animate={open ? 'visible' : 'hidden'}
           variants={menuStagger}
         >
-          {primaryNav.map((item) => (
+          {nav.map((item) => (
             <motion.div key={item.href} variants={menuItem} className="border-b border-ivory-100 last:border-none">
               <div className="flex items-center justify-between">
                 <Link

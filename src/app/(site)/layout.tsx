@@ -1,6 +1,8 @@
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { MobileStickyBar } from '@/components/layout/mobile-sticky-bar';
+import { primaryNav } from '@/data/nav';
+import { getNavData } from '@/data/nav-pages';
 import { WhatsappFloatButton } from '@/components/layout/whatsapp-float-button';
 import { MotionProvider } from '@/components/ui/motion-provider';
 import { ScrollProgress } from '@/components/ui/scroll-progress';
@@ -9,12 +11,18 @@ import { PageTransition } from '@/components/ui/page-transition';
 /** The public-site chrome (header/footer/WhatsApp float/mobile bar) lives here,
  * not in the true root layout — /admin routes share only the root's html/body/fonts,
  * not this shell, since they have their own Sidebar/Topbar chrome. */
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+  const { pages, hiddenSlugs } = await getNavData();
+  const nav = [
+    ...primaryNav.filter((item) => !hiddenSlugs.includes(item.href.slice(1))),
+    ...pages.filter((page) => page.showInHeader).map((page) => ({ label: page.title, href: `/${page.slug}` })),
+  ];
+
   return (
     <div className="flex min-h-screen flex-col pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0">
       <MotionProvider>
         <ScrollProgress />
-        <Header />
+        <Header nav={nav} />
         <main className="flex-1">
           <PageTransition>{children}</PageTransition>
         </main>

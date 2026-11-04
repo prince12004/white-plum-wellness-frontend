@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
-import { MapPin } from 'lucide-react';
 import { Select } from '@white/ui';
 import { Container, SectionHeading } from '@/components/ui/container';
 import { ClinicCard } from '@/components/cards/clinic-card';
@@ -33,7 +32,7 @@ export function ClinicLocatorClient({
 
       <ScrollReveal className="mb-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
         <label htmlFor="city-filter" className="text-sm font-medium text-charcoal-700">
-          Filter by city
+          {content.filterLabel}
         </label>
         <Select
           id="city-filter"
@@ -41,7 +40,7 @@ export function ClinicLocatorClient({
           onChange={(e) => setSelectedCity(e.target.value)}
           className="w-56"
         >
-          <option value="all">All Cities</option>
+          <option value="all">{content.allCitiesLabel}</option>
           {cities.map((city) => (
             <option key={city} value={city}>
               {city}
@@ -59,13 +58,7 @@ export function ClinicLocatorClient({
           ))}
         </div>
         <ImageReveal delay={150} className="relative hidden rounded-2xl bg-ivory-200 lg:col-span-2 lg:block">
-          {content.image && <Image src={content.image} alt="Map of clinic locations" fill sizes="40vw" className="object-cover" />}
-          <div className="absolute inset-0 flex items-center justify-center bg-charcoal-900/20">
-            <div className="flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-charcoal-700 shadow">
-              <MapPin className="h-4 w-4 text-peach-500" />
-              Interactive map coming with the live clinic data
-            </div>
-          </div>
+          {content.image && <Image src={content.image} alt="Our clinic locations" fill sizes="40vw" className="object-cover" />}
         </ImageReveal>
       </div>
     </Container>

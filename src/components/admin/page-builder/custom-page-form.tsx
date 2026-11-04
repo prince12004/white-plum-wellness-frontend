@@ -20,7 +20,7 @@ import {
 } from '@white/ui';
 import { SectionListEditor } from '@/components/admin/cms/section-list-editor';
 import { apiClient, ApiRequestError } from '@/lib/admin/api-client';
-import { resolvePageSections } from '@/lib/cms/sections';
+import { isFixedRoutePage, resolvePageSections } from '@/lib/cms/sections';
 
 interface CustomPageFormProps {
   page?: CustomPage | null;
@@ -37,6 +37,7 @@ export function CustomPageForm({ page }: CustomPageFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const isEdit = Boolean(page);
+  const fixedRoute = isFixedRoutePage(page?.systemKey);
 
   const [title, setTitle] = useState(page?.title ?? '');
   const [slug, setSlug] = useState(page?.slug ?? '');
@@ -50,6 +51,8 @@ export function CustomPageForm({ page }: CustomPageFormProps) {
   const [canonicalUrl, setCanonicalUrl] = useState(page?.canonicalUrl ?? '');
   const [noIndex, setNoIndex] = useState(page?.noIndex ?? false);
   const [isPublished, setIsPublished] = useState(page?.isPublished ?? false);
+  const [showInHeader, setShowInHeader] = useState(page?.showInHeader ?? false);
+  const [showInFooter, setShowInFooter] = useState(page?.showInFooter ?? false);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +75,8 @@ export function CustomPageForm({ page }: CustomPageFormProps) {
       canonicalUrl: canonicalUrl || null,
       noIndex,
       isPublished,
+      showInHeader,
+      showInFooter,
     };
     try {
       if (isEdit && page) {
@@ -112,6 +117,7 @@ export function CustomPageForm({ page }: CustomPageFormProps) {
               <Input
                 id="cp-slug"
                 required
+                disabled={fixedRoute}
                 value={slug}
                 onChange={(e) => {
                   setSlugTouched(true);
@@ -119,21 +125,35 @@ export function CustomPageForm({ page }: CustomPageFormProps) {
                 }}
               />
               <p className="text-[11px] text-charcoal-400">
-                {isEdit ? 'Changing this breaks existing links and ad campaigns pointing at the old URL.' : `The page will live at /${slug}`}
+                {fixedRoute ? "This built-in page's URL can't be changed." : isEdit ? 'Changing this breaks existing links and ad campaigns pointing at the old URL.' : `The page will live at /${slug}`}
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="cp-layout">Layout</Label>
-            <Select id="cp-layout" value={layout} onChange={(e) => setLayout(e.target.value as CustomPageLayout)}>
-              <option value="site">Standard page — with the website menu</option>
-              <option value="landing">Landing page — no menu, for ad campaigns</option>
-            </Select>
-          </div>
+          {!fixedRoute && (
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="cp-layout">Layout</Label>
+              <Select id="cp-layout" value={layout} onChange={(e) => setLayout(e.target.value as CustomPageLayout)}>
+                <option value="site">Standard page — with the website menu</option>
+                <option value="landing">Landing page — no menu, for ad campaigns</option>
+              </Select>
+            </div>
+          )}
           <div className="flex items-center gap-2">
             <Switch id="cp-published" checked={isPublished} onCheckedChange={setIsPublished} />
             <Label htmlFor="cp-published">Published</Label>
           </div>
+          {!fixedRoute && (
+            <>
+              <div className="flex items-center gap-2">
+                <Switch id="cp-header" checked={showInHeader} onCheckedChange={setShowInHeader} />
+                <Label htmlFor="cp-header">Show in the top menu</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch id="cp-footer" checked={showInFooter} onCheckedChange={setShowInFooter} />
+                <Label htmlFor="cp-footer">Show in the footer</Label>
+              </div>
+            </>
+          )}
           {page?.systemKey && (
             <p className="text-xs text-charcoal-500">This page is required by the website, so it can be unpublished but not deleted.</p>
           )}

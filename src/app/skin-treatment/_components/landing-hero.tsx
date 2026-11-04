@@ -6,7 +6,6 @@ import { Lock, Sparkles, Star } from 'lucide-react';
 import { BookingCta } from '@/components/cms/booking-cta';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
 import { AnimatedWords, ImageReveal, PopReveal, ScaleIn, Stagger, FadeUp } from '@/components/ui/motion';
-import { avatarImage } from '@/data/images';
 import { CmsIcon } from '@/lib/cms/icons';
 import { sectionContent, type SectionProps } from '@/lib/cms/sections';
 import { EASE } from '@/lib/motion';
@@ -92,9 +91,9 @@ export function LandingHero({ content }: SectionProps) {
           </div>
           <div className="h-8 w-px bg-white/15" />
           <div className="flex -space-x-2">
-            {['t1', 't3', 't5', 't9'].map((seed) => (
-              <div key={seed} className="relative h-7 w-7 overflow-hidden rounded-full ring-2 ring-charcoal-900">
-                <Image src={avatarImage(seed, 56)} alt="" fill sizes="28px" className="object-cover" />
+            {c.avatars.filter((avatar) => avatar.image).map((avatar, i) => (
+              <div key={i} className="relative h-7 w-7 overflow-hidden rounded-full ring-2 ring-charcoal-900">
+                <Image src={avatar.image} alt="" fill sizes="28px" className="object-cover" />
               </div>
             ))}
           </div>

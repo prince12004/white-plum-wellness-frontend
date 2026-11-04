@@ -29,10 +29,12 @@ import {
   useToast,
 } from '@white/ui';
 import { apiClient, ApiRequestError } from '@/lib/admin/api-client';
+import { isFixedRoutePage } from '@/lib/cms/sections';
 
 interface SeoRow {
   /** null = the homepage, which is a singleton and has no slug. */
   pageId: string | null;
+  systemKey: string | null;
   name: string;
   slug: string;
   metaTitle: string;
@@ -58,17 +60,19 @@ export function SeoPagesCard() {
     setRows([
       {
         pageId: null,
+        systemKey: null,
         name: 'Homepage',
         slug: '',
         metaTitle: home.metaTitle ?? '',
         metaDescription: home.metaDescription ?? '',
         metaKeywords: home.metaKeywords ?? '',
         ogImage: home.ogImage ?? '',
-        canonicalUrl: '',
-        noIndex: false,
+        canonicalUrl: home.canonicalUrl ?? '',
+        noIndex: home.noIndex ?? false,
       },
       ...pages.items.map((page) => ({
         pageId: page.id,
+        systemKey: page.systemKey,
         name: page.title,
         slug: page.slug,
         metaTitle: page.metaTitle ?? '',
@@ -93,14 +97,14 @@ export function SeoPagesCard() {
       metaDescription: editing.metaDescription || null,
       metaKeywords: editing.metaKeywords || null,
       ogImage: editing.ogImage || null,
+      canonicalUrl: editing.canonicalUrl || null,
+      noIndex: editing.noIndex,
     };
     try {
       if (editing.pageId) {
         await apiClient.patch(`/custom-pages/${editing.pageId}`, {
           ...seo,
           slug: editing.slug,
-          canonicalUrl: editing.canonicalUrl || null,
-          noIndex: editing.noIndex,
         });
       } else {
         await apiClient.patch('/homepage-cms', seo);
@@ -168,7 +172,7 @@ export function SeoPagesCard() {
               {editing.pageId && (
                 <div className="flex flex-col gap-1.5">
                   <Label htmlFor="seo-row-slug">URL slug</Label>
-                  <Input id="seo-row-slug" value={editing.slug} onChange={(e) => setEditing({ ...editing, slug: e.target.value })} />
+                  <Input id="seo-row-slug" disabled={isFixedRoutePage(editing.systemKey)} value={editing.slug} onChange={(e) => setEditing({ ...editing, slug: e.target.value })} />
                   <p className="text-[11px] text-charcoal-400">Changing this breaks existing links and ad campaigns pointing at the old URL.</p>
                 </div>
               )}
@@ -198,22 +202,18 @@ export function SeoPagesCard() {
                 <Label>Social share image</Label>
                 <ImageUpload value={editing.ogImage} onChange={(ogImage) => setEditing({ ...editing, ogImage })} />
               </div>
-              {editing.pageId && (
-                <>
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="seo-row-canonical">Canonical URL</Label>
-                    <Input
-                      id="seo-row-canonical"
-                      value={editing.canonicalUrl}
-                      onChange={(e) => setEditing({ ...editing, canonicalUrl: e.target.value })}
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Switch id="seo-row-noindex" checked={editing.noIndex} onCheckedChange={(noIndex) => setEditing({ ...editing, noIndex })} />
-                    <Label htmlFor="seo-row-noindex">Hide from search engines</Label>
-                  </div>
-                </>
-              )}
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="seo-row-canonical">Canonical URL</Label>
+                <Input
+                  id="seo-row-canonical"
+                  value={editing.canonicalUrl}
+                  onChange={(e) => setEditing({ ...editing, canonicalUrl: e.target.value })}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch id="seo-row-noindex" checked={editing.noIndex} onCheckedChange={(noIndex) => setEditing({ ...editing, noIndex })} />
+                <Label htmlFor="seo-row-noindex">Hide from search engines</Label>
+              </div>
             </div>
           )}
           <DialogFooter>

@@ -11,10 +11,12 @@ const display = Fraunces({
   axes: ['SOFT', 'opsz'],
 });
 
+// Variable on purpose: Google serves this family's fixed weights from extensionless
+// /l/font URLs, which next/font can't parse, so the build fails.
 const body = Manrope({
   subsets: ['latin'],
   variable: '--font-body',
-  weight: ['400', '500', '600', '700'],
+  weight: 'variable',
 });
 
 export const viewport: Viewport = {

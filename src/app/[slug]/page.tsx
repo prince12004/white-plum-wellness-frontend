@@ -7,18 +7,20 @@ import { WhatsappFloatButton } from '@/components/layout/whatsapp-float-button';
 import { MotionProvider } from '@/components/ui/motion-provider';
 import { ApiNotFoundError, apiGet } from '@/lib/api';
 import { buildCmsMetadata } from '@/lib/cms/metadata';
-import { resolvePageSections } from '@/lib/cms/sections';
+import { resolvePageSections, sectionContent } from '@/lib/cms/sections';
 import SiteLayout from '../(site)/layout';
 import { LandingMobileBar } from '../skin-treatment/_components/landing-mobile-bar';
 import { LandingTopBar } from '../skin-treatment/_components/landing-top-bar';
 
-export const revalidate = 60;
+// Uncached: Next's fetch cache keeps the last 200 when the API starts returning 404,
+// so a cached read would keep an unpublished or renamed page live.
+export const revalidate = 0;
 
 type Props = { params: Promise<{ slug: string }> };
 
 async function getPublishedPage(slug: string): Promise<CustomPage> {
   try {
-    return await apiGet<CustomPage>(`/custom-pages/${encodeURIComponent(slug)}`);
+    return await apiGet<CustomPage>(`/custom-pages/${encodeURIComponent(slug)}`, 0);
   } catch (err) {
     if (err instanceof ApiNotFoundError) notFound();
     throw err;
@@ -34,9 +36,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * deliberately skips the site nav — its conversion-focused top bar and sticky CTA bar replace it. */
 export default async function CmsPage({ params }: Props) {
   const page = await getPublishedPage((await params).slug);
-  const sections = <CmsSections sections={resolvePageSections(page)} />;
+  const resolved = resolvePageSections(page);
+  const sections = <CmsSections sections={resolved} />;
 
   if (page.layout !== 'landing') return <SiteLayout>{sections}</SiteLayout>;
+
+  // The sticky bar repeats the page's own hero buttons.
+  const hero = sectionContent('landing-hero', resolved.find((section) => section.type === 'landing-hero')?.content);
 
   return (
     <MotionProvider>
@@ -45,7 +51,7 @@ export default async function CmsPage({ params }: Props) {
         {sections}
         <Footer />
         <WhatsappFloatButton />
-        <LandingMobileBar service={page.title} />
+        <LandingMobileBar service={page.title} ctaLabel={hero.ctaLabel} whatsappLabel={hero.whatsappLabel} />
       </div>
     </MotionProvider>
   );

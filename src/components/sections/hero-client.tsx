@@ -10,7 +10,6 @@ import { CmsIcon } from '@/lib/cms/icons';
 import type { SectionContent } from '@/lib/cms/sections';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
 import { RotatingWord } from '@/components/ui/rotating-word';
-import { avatarImage } from '@/data/images';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -95,9 +94,9 @@ export function HeroClient({ content }: { content: SectionContent<'hero'> }) {
         <p className="text-sm text-ivory-100/70">{content.ratingNote}</p>
         <div className="mt-4 flex items-center gap-2 border-t border-white/10 pt-4">
           <div className="flex -space-x-2">
-            {['t1', 't3', 't5', 't9'].map((seed) => (
-              <div key={seed} className="relative h-7 w-7 overflow-hidden rounded-full ring-2 ring-charcoal-900">
-                <Image src={avatarImage(seed, 56)} alt="" fill sizes="28px" className="object-cover" />
+            {content.avatars.filter((avatar) => avatar.image).map((avatar, i) => (
+              <div key={i} className="relative h-7 w-7 overflow-hidden rounded-full ring-2 ring-charcoal-900">
+                <Image src={avatar.image} alt="" fill sizes="28px" className="object-cover" />
               </div>
             ))}
           </div>

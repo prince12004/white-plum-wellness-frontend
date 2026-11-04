@@ -49,8 +49,8 @@ export async function DoctorSpotlight({ content }: SectionProps) {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <BookAppointmentButton context={bookingContext}>Book With {doctor.name.split(' ')[1] ?? 'Doctor'}</BookAppointmentButton>
-              <WhatsappCtaLink context={bookingContext}>WhatsApp</WhatsappCtaLink>
+              <BookAppointmentButton context={bookingContext}>{c.ctaLabel || `Book With ${doctor.name.split(' ')[1] ?? 'Doctor'}`}</BookAppointmentButton>
+              {c.whatsappLabel && <WhatsappCtaLink context={bookingContext}>{c.whatsappLabel}</WhatsappCtaLink>}
             </div>
           </FadeUp>
         </div>

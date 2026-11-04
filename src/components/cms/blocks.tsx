@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button, cn } from '@white/ui';
 import { BookingCta } from '@/components/cms/booking-cta';
+import { fillCounts } from '@/components/cms/counts';
 import { WhatsappCtaLink } from '@/components/booking/whatsapp-cta-link';
 import { Container, Section, SectionHeading } from '@/components/ui/container';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
@@ -77,15 +78,16 @@ export function BannerBlock({ content }: SectionProps) {
   );
 }
 
-export function TextImageBlock({ content }: SectionProps) {
+export async function TextImageBlock({ content }: SectionProps) {
   const c = sectionContent('text-image', content);
+  const body = await fillCounts(c.body);
   return (
     <Section>
       <Container>
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <div className={cn(c.imagePosition === 'left' && 'lg:order-2')}>
             <SectionHeading eyebrow={c.eyebrow} title={c.title} align="left" className="mb-6" />
-            <RichText text={c.body} />
+            <RichText text={body} />
             {c.ctaLabel && (
               <div className="mt-6">
                 <BookingCta href={c.ctaHref}>{c.ctaLabel}</BookingCta>
@@ -106,7 +108,7 @@ export function TextImageBlock({ content }: SectionProps) {
 export function CardsBlock({ content }: SectionProps) {
   const c = sectionContent('cards', content);
   return (
-    <Section tone="muted">
+    <Section tone={c.tone === 'muted' ? 'muted' : 'default'}>
       <Container>
         <SectionHeading eyebrow={c.eyebrow} title={c.title} description={c.description} />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -149,7 +151,7 @@ export function CtaBlock({ content }: SectionProps) {
         <h2 className="font-display text-4xl font-medium">{c.title}</h2>
         {c.description && <p className="mx-auto mt-4 max-w-md text-base text-ivory-100/70">{c.description}</p>}
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <BookingCta size="lg" href={c.ctaHref}>
+          <BookingCta size="lg" href={c.ctaHref} context={c.bookingPackage ? { package: c.bookingPackage } : undefined}>
             {c.ctaLabel}
           </BookingCta>
           {c.whatsappLabel && <WhatsappCtaLink className="h-12 px-6 text-base">{c.whatsappLabel}</WhatsappCtaLink>}

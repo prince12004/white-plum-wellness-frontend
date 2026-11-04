@@ -29,6 +29,7 @@ import { LandingFaq } from '@/app/skin-treatment/_components/landing-faq';
 import { ReachUsSection } from '@/app/skin-treatment/_components/reach-us-section';
 import { isSectionType, type SectionProps, type SectionType } from '@/lib/cms/sections';
 import { BannerBlock, CardsBlock, CtaBlock, DividerBlock, RichTextBlock, TextImageBlock } from './blocks';
+import { ContactPanelBlock, DataListBlock, PageHeaderBlock, TimelineBlock } from './page-blocks';
 
 const RENDERERS: Record<SectionType, (props: SectionProps) => JSX.Element | null | Promise<JSX.Element | null>> = {
   hero: Hero,
@@ -65,6 +66,10 @@ const RENDERERS: Record<SectionType, (props: SectionProps) => JSX.Element | null
   cards: CardsBlock,
   cta: CtaBlock,
   divider: DividerBlock,
+  'page-header': PageHeaderBlock,
+  'data-list': DataListBlock,
+  timeline: TimelineBlock,
+  'contact-panel': ContactPanelBlock,
 };
 
 /** Renders a page's active sections in saved order. */
