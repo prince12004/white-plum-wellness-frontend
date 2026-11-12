@@ -126,7 +126,13 @@ export function SectionListEditor({ sections, onChange }: { sections: CmsSection
                   <p className="truncate text-xs text-charcoal-400">{section.content.title}</p>
                 )}
               </div>
-              {section.isActive ? <Badge variant="success">Active</Badge> : <Badge variant="warning">Inactive</Badge>}
+              <button
+                type="button"
+                title={section.isActive ? 'Click to hide this section on the website' : 'Click to show this section on the website'}
+                onClick={() => update(section.id, { isActive: !section.isActive })}
+              >
+                {section.isActive ? <Badge variant="success">Active</Badge> : <Badge variant="warning">Inactive</Badge>}
+              </button>
               <Switch
                 aria-label={`Show ${sectionTitle(section)} on the website`}
                 checked={section.isActive}

@@ -7,6 +7,8 @@ const config: Config = {
   content: [
     './src/**/*.{ts,tsx}',
     '../../packages/ui/src/**/*.{ts,tsx}',
+    // The production server keeps its own packages/ copy inside this app (see deploy/ecosystem.config.js).
+    './packages/ui/src/**/*.{ts,tsx}',
   ],
 };
 
