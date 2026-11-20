@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { CheckCircle2 } from 'lucide-react';
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const offer = await getOfferBySlug(slug);
   if (!offer) return {};
-  return { title: offer.title, description: offer.description };
+  return pageMetadata({ title: offer.title, description: offer.description, path: `/offers/${offer.slug}`, image: offer.image });
 }
 
 export default async function OfferDetailPage({ params }: { params: Promise<{ slug: string }> }) {

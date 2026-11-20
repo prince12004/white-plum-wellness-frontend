@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Award, Languages } from 'lucide-react';
@@ -29,7 +30,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const doctor = await getDoctorBySlug(slug);
   if (!doctor) return {};
-  return { title: doctor.name, description: `${doctor.qualification} — ${doctor.specialization.join(', ')}` };
+  return pageMetadata({
+    title: doctor.name,
+    description: `${doctor.name}, ${doctor.qualification} — ${doctor.specialization.join(', ')} at White Plum Wellness.`,
+    path: `/doctors/${doctor.slug}`,
+    image: doctor.photo,
+  });
 }
 
 export default async function DoctorDetailPage({ params }: { params: Promise<{ slug: string }> }) {

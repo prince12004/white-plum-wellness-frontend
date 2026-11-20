@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Check } from 'lucide-react';
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const pkg = await getPackageBySlug(slug);
   if (!pkg) return {};
-  return { title: pkg.name, description: pkg.description };
+  return pageMetadata({ title: pkg.name, description: pkg.description, path: `/packages/${pkg.slug}`, image: pkg.image });
 }
 
 export default async function PackageDetailPage({ params }: { params: Promise<{ slug: string }> }) {

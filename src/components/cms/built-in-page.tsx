@@ -21,7 +21,7 @@ async function getBuiltInPage(slug: string): Promise<CustomPage | null> {
 
 export async function builtInMetadata(slug: string): Promise<Metadata> {
   const page = await getBuiltInPage(slug);
-  return page ? buildCmsMetadata({ ...page, metaTitle: page.metaTitle || page.title }) : {};
+  return page ? buildCmsMetadata(page, { title: page.title, path: `/${page.slug}` }) : {};
 }
 
 /** A page with its own route whose content, SEO and publish status come from Pages Management. */

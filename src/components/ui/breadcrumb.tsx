@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { ChevronRight, Home } from 'lucide-react';
+import { JsonLd } from '@/components/seo/json-ld';
+import { breadcrumbSchema } from '@/lib/seo';
 import { Container } from './container';
 
 export interface BreadcrumbItem {
@@ -10,6 +12,7 @@ export interface BreadcrumbItem {
 export function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
   return (
     <nav aria-label="Breadcrumb" className="border-b border-ivory-200 bg-ivory-50">
+      <JsonLd data={breadcrumbSchema(items)} />
       <Container className="overflow-x-auto py-3">
         <div className="flex w-max items-center gap-1.5 whitespace-nowrap text-sm text-charcoal-500">
           <Link href="/" className="flex items-center gap-1 transition-colors hover:text-peach-600" aria-label="Home">

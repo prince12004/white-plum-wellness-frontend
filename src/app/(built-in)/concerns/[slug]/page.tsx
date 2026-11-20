@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { AlertCircle, HelpCircle } from 'lucide-react';
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const concern = await getConcernBySlug(slug);
   if (!concern) return {};
-  return { title: concern.name, description: concern.shortDescription };
+  return pageMetadata({ title: `${concern.name}: Causes & Treatment Options`, description: concern.shortDescription, path: `/concerns/${concern.slug}`, image: concern.image });
 }
 
 export default async function ConcernDetailPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -1,4 +1,7 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
+import { JsonLd } from '@/components/seo/json-ld';
+import { serviceSchema } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Check, Clock, Layers, ShieldCheck, Sparkles, Timer } from 'lucide-react';
@@ -41,11 +44,12 @@ export async function generateMetadata({
   const { service: serviceSlug } = await params;
   const service = await getServiceBySlug(serviceSlug);
   if (!service) return {};
-  return {
+  return pageMetadata({
     title: service.name,
     description: service.shortDescription,
-    openGraph: { title: service.name, description: service.shortDescription, images: [service.image] },
-  };
+    path: `/services/${service.categorySlug}/${service.slug}`,
+    image: service.image,
+  });
 }
 
 export default async function ServiceDetailPage({
@@ -84,6 +88,7 @@ export default async function ServiceDetailPage({
 
   return (
     <>
+      <JsonLd data={serviceSchema(service, category?.name)} />
       <Breadcrumb
         items={[
           { label: 'Services', href: '/services' },

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 
 interface CmsSeo {
   metaTitle?: string | null;
@@ -9,14 +10,24 @@ interface CmsSeo {
   noIndex?: boolean;
 }
 
-/** Only sets what the admin filled in, so anything else falls back to the root layout's defaults. */
-export function buildCmsMetadata(seo: CmsSeo): Metadata {
-  return {
-    ...(seo.metaTitle && { title: seo.metaTitle }),
-    ...(seo.metaDescription && { description: seo.metaDescription }),
-    ...(seo.metaKeywords && { keywords: seo.metaKeywords }),
-    ...(seo.ogImage && { openGraph: { images: [seo.ogImage] } }),
-    ...(seo.canonicalUrl && { alternates: { canonical: seo.canonicalUrl } }),
-    ...(seo.noIndex && { robots: { index: false, follow: false } }),
-  };
+interface Fallback {
+  title: string;
+  description?: string;
+  path: string;
+  /** For the homepage, whose title doesn't take the "| site name" suffix. */
+  absoluteTitle?: boolean;
+}
+
+/** What the admin set in Pages/SEO Management, over the page's own defaults. */
+export function buildCmsMetadata(seo: CmsSeo, fallback: Fallback): Metadata {
+  return pageMetadata({
+    title: seo.metaTitle || fallback.title,
+    description: seo.metaDescription || fallback.description,
+    path: fallback.path,
+    canonical: seo.canonicalUrl,
+    image: seo.ogImage,
+    keywords: seo.metaKeywords,
+    noIndex: seo.noIndex,
+    absoluteTitle: fallback.absoluteTitle,
+  });
 }

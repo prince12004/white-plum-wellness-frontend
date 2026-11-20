@@ -1,4 +1,7 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
+import { JsonLd } from '@/components/seo/json-ld';
+import { clinicSchema } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -32,7 +35,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const clinic = await getClinicBySlug(slug);
   if (!clinic) return {};
-  return { title: clinic.name, description: `${clinic.name} — ${clinic.address}` };
+  return pageMetadata({
+    title: clinic.name,
+    description: `Visit ${clinic.name} at ${clinic.address}. Book skin, hair and laser treatments with our dermatologists.`,
+    path: `/clinics/${clinic.slug}`,
+    image: clinic.image,
+  });
 }
 
 export default async function ClinicDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -52,6 +60,7 @@ export default async function ClinicDetailPage({ params }: { params: Promise<{ s
 
   return (
     <>
+      <JsonLd data={clinicSchema(clinic)} />
       <Breadcrumb items={[{ label: 'Clinics', href: '/clinics' }, { label: clinic.name }]} />
 
       <section className="relative overflow-hidden bg-charcoal-900 py-20 text-white">

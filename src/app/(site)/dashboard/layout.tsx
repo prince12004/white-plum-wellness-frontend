@@ -1,9 +1,12 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { User } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 import { getCustomerSession } from '@/lib/customer-session';
 import { LogoutButton } from './logout-button';
 import { DashboardTabs } from './dashboard-tabs';
+
+export const metadata: Metadata = { title: 'My Account', robots: { index: false, follow: false } };
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const customer = await getCustomerSession();

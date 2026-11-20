@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import type { HomepageContent } from '@white/types';
 import { getAllBlogs } from '@/data/blogs';
 import { getAllCategories } from '@/data/categories';
 import { getAllClinics } from '@/data/clinics';
@@ -8,36 +9,40 @@ import { getNavData } from '@/data/nav-pages';
 import { getAllOffers } from '@/data/offers';
 import { getAllPackages } from '@/data/packages';
 import { getAllServices } from '@/data/services';
+import { apiGet } from '@/lib/api';
+import { SITE_URL, absoluteUrl } from '@/lib/seo';
 
 export const revalidate = 3600;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+type Entry = MetadataRoute.Sitemap[number];
 
 /** One failing list shouldn't drop every other URL from the sitemap. */
-async function paths<T>(load: () => Promise<T[]>, toPath: (item: T) => string): Promise<string[]> {
+async function entries<T extends { updatedAt?: string }>(load: () => Promise<T[]>, toPath: (item: T) => string): Promise<Entry[]> {
   try {
-    return (await load()).map(toPath);
+    return (await load()).map((item) => ({ url: absoluteUrl(toPath(item)), ...(item.updatedAt && { lastModified: item.updatedAt }) }));
   } catch {
     return [];
   }
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { pages } = await getNavData();
+  const [{ pages }, home] = await Promise.all([getNavData(), apiGet<HomepageContent>('/homepage-cms').catch(() => null)]);
   const lists = await Promise.all([
-    paths(getAllCategories, (c) => `/services/${c.slug}`),
-    paths(getAllServices, (s) => `/services/${s.categorySlug}/${s.slug}`),
-    paths(getAllConcerns, (c) => `/concerns/${c.slug}`),
-    paths(getAllPackages, (p) => `/packages/${p.slug}`),
-    paths(getAllOffers, (o) => `/offers/${o.slug}`),
-    paths(getAllDoctors, (d) => `/doctors/${d.slug}`),
-    paths(getAllClinics, (c) => `/clinics/${c.slug}`),
-    paths(getAllBlogs, (b) => `/blogs/${b.slug}`),
+    entries(getAllCategories, (c) => `/services/${c.slug}`),
+    entries(getAllServices, (s) => `/services/${s.categorySlug}/${s.slug}`),
+    entries(getAllConcerns, (c) => `/concerns/${c.slug}`),
+    entries(getAllPackages, (p) => `/packages/${p.slug}`),
+    entries(getAllOffers, (o) => `/offers/${o.slug}`),
+    entries(getAllDoctors, (d) => `/doctors/${d.slug}`),
+    entries(getAllClinics, (c) => `/clinics/${c.slug}`),
+    entries(getAllBlogs, (b) => `/blogs/${b.slug}`),
   ]);
 
   return [
-    { url: SITE_URL },
-    ...pages.filter((page) => !page.noIndex).map((page) => ({ url: `${SITE_URL}/${page.slug}`, lastModified: page.updatedAt })),
-    ...lists.flat().map((path) => ({ url: `${SITE_URL}${path}` })),
+    // Matches the homepage canonical, which Next.js writes without the trailing slash.
+    { url: SITE_URL, ...(home?.updatedAt && { lastModified: home.updatedAt }) },
+    // Pages from Pages Management, minus any marked "Hide from search engines".
+    ...pages.filter((page) => !page.noIndex).map((page) => ({ url: absoluteUrl(`/${page.slug}`), lastModified: page.updatedAt })),
+    ...lists.flat(),
   ];
 }

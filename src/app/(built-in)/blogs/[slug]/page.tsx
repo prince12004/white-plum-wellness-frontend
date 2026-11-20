@@ -1,4 +1,7 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
+import { JsonLd } from '@/components/seo/json-ld';
+import { articleSchema } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
@@ -24,11 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const blog = await getBlogBySlug(slug);
   if (!blog) return {};
-  return {
-    title: blog.title,
-    description: blog.excerpt,
-    openGraph: { title: blog.title, description: blog.excerpt, images: [blog.image] },
-  };
+  return pageMetadata({ title: blog.title, description: blog.excerpt, path: `/blogs/${blog.slug}`, image: blog.image, type: 'article' });
 }
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -45,6 +44,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
   return (
     <>
+      <JsonLd data={articleSchema(blog)} />
       <Breadcrumb items={[{ label: 'Blogs', href: '/blogs' }, { label: blog.title }]} />
 
       <section className="relative overflow-hidden bg-charcoal-900 py-20 text-white">

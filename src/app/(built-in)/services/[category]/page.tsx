@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
@@ -30,10 +31,12 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category: categorySlug } = await params;
   const category = await getCategoryBySlug(categorySlug);
   if (!category) return {};
-  return {
+  return pageMetadata({
     title: `${category.name} Treatments`,
     description: category.description,
-  };
+    path: `/services/${category.slug}`,
+    image: category.image,
+  });
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {

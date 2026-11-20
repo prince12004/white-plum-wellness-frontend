@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import { Fraunces, Manrope } from 'next/font/google';
+import { JsonLd } from '@/components/seo/json-ld';
 import { siteConfig } from '@/data/site';
+import { HOME_DESCRIPTION, HOME_TITLE, SITE_URL, organizationSchema } from '@/lib/seo';
 import './globals.css';
 
 const display = Fraunces({
@@ -27,12 +29,12 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: `${siteConfig.businessName} — ${siteConfig.tagline}`,
+    default: HOME_TITLE,
     template: `%s | ${siteConfig.businessName}`,
   },
-  description:
-    'Premium dermatology, skin, hair, laser, and aesthetic treatments — personalised care from expert dermatologists across our clinics.',
+  description: HOME_DESCRIPTION,
   // Google Search Console ownership; public/googlea4a74fb249365a62.html verifies the same property by file.
   verification: { google: 'JEukt6M0EnjLAksN9qVr75vxY1j0jvD-swJaWWl5b-Y' },
 };
@@ -40,7 +42,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
-      <body className="font-body">{children}</body>
+      <body className="font-body">
+        <JsonLd data={organizationSchema()} />
+        {children}
+      </body>
     </html>
   );
 }
