@@ -33,6 +33,8 @@ export const metadata: Metadata = {
   },
   description:
     'Premium dermatology, skin, hair, laser, and aesthetic treatments — personalised care from expert dermatologists across our clinics.',
+  // Google Search Console ownership; public/googlea4a74fb249365a62.html verifies the same property by file.
+  verification: { google: 'JEukt6M0EnjLAksN9qVr75vxY1j0jvD-swJaWWl5b-Y' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
