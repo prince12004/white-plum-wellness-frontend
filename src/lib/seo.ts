@@ -51,7 +51,7 @@ export function pageMetadata(seo: PageSeo): Metadata {
 
 const organizationRef = { '@id': ORGANIZATION_ID };
 
-/** Only details the site already shows publicly — the contact email in data/site.ts is a placeholder, so it's left out. */
+/** Only details the site already shows publicly. */
 export function organizationSchema() {
   return {
     '@context': 'https://schema.org',
@@ -63,6 +63,7 @@ export function organizationSchema() {
         url: absoluteUrl('/'),
         logo: absoluteUrl('/logo.png'),
         telephone: siteConfig.contactPhone,
+        email: siteConfig.contactEmail,
       },
       {
         '@type': 'WebSite',

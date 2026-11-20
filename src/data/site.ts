@@ -17,7 +17,7 @@ export const siteConfig: SiteConfig = {
   businessName: 'White Plum Wellness',
   tagline: 'Skin · Hair · Laser · Aesthetics',
   contactPhone: '+91 79826 48345',
-  contactEmail: 'hello@whiteplumwellness.example',
+  contactEmail: 'whiteplumwellness@gmail.com',
   whatsappNumber: '917982648345',
   address: 'M-83, M Block Market, GK-2, New Delhi',
   social: {
