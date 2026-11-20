@@ -3,6 +3,7 @@ import { Facebook, Instagram, Mail, MapPin, Phone, ShieldCheck, Sparkles, Users,
 import { footerNav, type NavLink } from '@/data/nav';
 import { getNavData } from '@/data/nav-pages';
 import { siteConfig } from '@/data/site';
+import { cn } from '@white/ui';
 import { Logo } from '@/components/logo';
 import { Stagger, FadeUp } from '@/components/ui/motion';
 
@@ -17,8 +18,10 @@ const footerLinkClass =
 const socialIconClass =
   'flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-peach-500';
 
-export async function Footer() {
-  const { pages, hiddenSlugs } = await getNavData();
+/** `landing` is for ad landing pages: no social links or site navigation, so visitors stay on the page. */
+export async function Footer({ variant = 'site' }: { variant?: 'site' | 'landing' }) {
+  const landing = variant === 'landing';
+  const { pages, hiddenSlugs } = landing ? { pages: [], hiddenSlugs: [] } : await getNavData();
   const hidden = new Set(hiddenSlugs.map((slug) => `/${slug}`));
   const visible = (link: NavLink) => !hidden.has(link.href);
   const explore = [
@@ -38,21 +41,29 @@ export async function Footer() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
-        <Stagger className="grid grid-cols-1 gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-x-8" staggerDelay={0.1}>
+        <Stagger
+          className={cn(
+            'grid grid-cols-1 gap-x-10 gap-y-9 sm:grid-cols-2 lg:gap-x-8',
+            !landing && 'lg:grid-cols-[1.4fr_1fr_1fr_1fr]',
+          )}
+          staggerDelay={0.1}
+        >
           <FadeUp>
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-ivory-200/70">{siteConfig.tagline}</p>
-            <div className="mt-5 flex gap-3">
-              <a href={siteConfig.social.instagram} aria-label="Instagram" className={socialIconClass}>
-                <Instagram className="h-4 w-4" />
-              </a>
-              <a href={siteConfig.social.facebook} aria-label="Facebook" className={socialIconClass}>
-                <Facebook className="h-4 w-4" />
-              </a>
-              <a href={siteConfig.social.youtube} aria-label="YouTube" className={socialIconClass}>
-                <Youtube className="h-4 w-4" />
-              </a>
-            </div>
+            {!landing && (
+              <div className="mt-5 flex gap-3">
+                <a href={siteConfig.social.instagram} aria-label="Instagram" className={socialIconClass}>
+                  <Instagram className="h-4 w-4" />
+                </a>
+                <a href={siteConfig.social.facebook} aria-label="Facebook" className={socialIconClass}>
+                  <Facebook className="h-4 w-4" />
+                </a>
+                <a href={siteConfig.social.youtube} aria-label="YouTube" className={socialIconClass}>
+                  <Youtube className="h-4 w-4" />
+                </a>
+              </div>
+            )}
             <ul className="mt-6 flex flex-col gap-2.5 border-t border-white/10 pt-5">
               {trustPoints.map(({ icon: TrustIcon, label }) => (
                 <li key={label} className="flex items-center gap-2 text-sm text-ivory-200/70">
@@ -63,31 +74,35 @@ export async function Footer() {
             </ul>
           </FadeUp>
 
-          <FadeUp>
-            <p className="font-display text-xs uppercase tracking-[0.2em] text-gold-300">Explore</p>
-            <ul className="mt-4 flex flex-col gap-2">
-              {explore.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className={footerLinkClass}>
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </FadeUp>
+          {!landing && (
+            <>
+              <FadeUp>
+                <p className="font-display text-xs uppercase tracking-[0.2em] text-gold-300">Explore</p>
+                <ul className="mt-4 flex flex-col gap-2">
+                  {explore.map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href} className={footerLinkClass}>
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </FadeUp>
 
-          <FadeUp>
-            <p className="font-display text-xs uppercase tracking-[0.2em] text-gold-300">Programs</p>
-            <ul className="mt-4 flex flex-col gap-2">
-              {footerNav.programs.filter(visible).map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className={footerLinkClass}>
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </FadeUp>
+              <FadeUp>
+                <p className="font-display text-xs uppercase tracking-[0.2em] text-gold-300">Programs</p>
+                <ul className="mt-4 flex flex-col gap-2">
+                  {footerNav.programs.filter(visible).map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href} className={footerLinkClass}>
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </FadeUp>
+            </>
+          )}
 
           <FadeUp>
             <p className="font-display text-xs uppercase tracking-[0.2em] text-gold-300">Get in Touch</p>

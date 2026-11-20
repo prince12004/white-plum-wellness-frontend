@@ -61,7 +61,7 @@ export default async function CmsPage({ params }: Props) {
         <JsonLd data={breadcrumbSchema([{ label: page.title }])} />
         <LandingTopBar service={page.title} />
         {sections}
-        <Footer />
+        <Footer variant="landing" />
         <WhatsappFloatButton />
         <LandingMobileBar service={page.title} ctaLabel={hero.ctaLabel} whatsappLabel={hero.whatsappLabel} />
       </div>
